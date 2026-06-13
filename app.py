@@ -14,6 +14,7 @@ app = FastAPI(title="RAG Document Q&A")
 
 class Question(BaseModel):
     question: str
+    history: list[dict] = []
 
 
 @app.post("/upload")
@@ -65,7 +66,7 @@ async def ask(body: Question):
             "chunks": []
         }
 
-    answer = generate_answer(body.question, chunks)
+    answer = generate_answer(body.question, chunks, body.history)
     sources = list(dict.fromkeys(c["source"] for c in chunks))
 
     return {"answer": answer, "sources": sources, "chunks": chunks}

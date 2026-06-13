@@ -219,6 +219,13 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 }
 .send-btn:hover:not(:disabled) { background: var(--primary-dark); }
 .send-btn:disabled { background: var(--border); cursor: not-allowed; }
+.new-chat-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  border-radius: var(--radius); padding: 0 14px; height: 44px;
+  cursor: pointer; font-size: 13px; font-family: inherit;
+  white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+}
+.new-chat-btn:hover { border-color: var(--primary); color: var(--primary); }
 .toast {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: #1e293b; color: white; padding: 9px 16px;
@@ -266,6 +273,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
       </div>
     </div>
     <div class="input-area">
+      <button class="new-chat-btn" id="newChatBtn" onclick="clearChat()">↺ <span id="sNewChat">New chat</span></button>
       <textarea id="questionInput" placeholder="Ask a question… (Enter to send)" rows="1"></textarea>
       <button class="send-btn" id="sendBtn" title="Send">&#9658;</button>
     </div>
@@ -278,6 +286,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 // ── i18n ───────────────────────────────────────────────────────────────────
 const t = {
   en: {
+    newChat:      'New chat',
     langBtn:      '中文',
     hTitle:       'RAG Document Q&A',
     sUploadTitle: 'Upload Document',
@@ -298,6 +307,7 @@ const t = {
     toastErr:     msg => `✗ ${msg}`,
   },
   zh: {
+    newChat:      '新对话',
     langBtn:      'English',
     hTitle:       'RAG 文档问答',
     sUploadTitle: '上传文档',
@@ -336,6 +346,7 @@ function applyLang() {
   document.getElementById('wTitle').textContent      = l.wTitle;
   document.getElementById('wDesc').textContent       = l.wDesc;
   document.getElementById('questionInput').placeholder = l.placeholder;
+  document.getElementById('sNewChat').textContent = l.newChat;
   const ed = document.getElementById('emptyDocs');
   if (ed) ed.innerHTML = l.emptyDocs;
   // docs title (keep count span)
@@ -418,6 +429,18 @@ const messagesEl    = document.getElementById('messages');
 const questionInput = document.getElementById('questionInput');
 const sendBtn       = document.getElementById('sendBtn');
 let isLoading = false;
+let history = [];  // [{role: "user"|"assistant", content: "..."}]
+
+function clearChat() {
+  history = [];
+  messagesEl.innerHTML = `
+    <div class="welcome" id="welcome">
+      <div class="icon">💬</div>
+      <h2 id="wTitle">${t[lang].wTitle}</h2>
+      <p id="wDesc">${t[lang].wDesc}</p>
+    </div>`;
+  questionInput.focus();
+}
 
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -487,11 +510,13 @@ async function sendQuestion() {
     const res  = await fetch('/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: q })
+      body: JSON.stringify({ question: q, history })
     });
     const data = await res.json();
     document.getElementById('typing')?.remove();
     addMessage('assistant', data.answer, data.sources || [], data.chunks || []);
+    history.push({ role: 'user', content: q });
+    history.push({ role: 'assistant', content: data.answer });
   } catch {
     document.getElementById('typing')?.remove();
     addMessage('assistant', t[lang].errServer);
