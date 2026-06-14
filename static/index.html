@@ -252,7 +252,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 <header>
   <span style="font-size:20px">🔍</span>
   <h1 id="hTitle">RAG Document Q&amp;A</h1>
-  <span class="badge">Ollama + ChromaDB</span>
+  <span class="badge">DeepSeek + ChromaDB</span>
   <button class="lang-btn" id="langBtn" onclick="toggleLang()">中文</button>
 </header>
 
@@ -261,7 +261,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
     <div class="sidebar-section">
       <h2 id="sUploadTitle">Upload Document</h2>
       <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" accept=".pdf,.txt" multiple>
+        <input type="file" id="fileInput" accept=".pdf,.txt,.docx,.md" multiple>
         <div class="icon">📄</div>
         <p id="sUploadHint"><strong>Click or drag &amp; drop</strong><br>PDF or TXT files</p>
       </div>
@@ -303,7 +303,7 @@ const t = {
     langBtn:      '中文',
     hTitle:       'RAG Document Q&A',
     sUploadTitle: 'Upload Document',
-    sUploadHint:  '<strong>Click or drag &amp; drop</strong><br>PDF or TXT files',
+    sUploadHint:  '<strong>Click or drag &amp; drop</strong><br>PDF, DOCX, TXT, MD',
     indexing:     '⏳ Indexing…',
     sDocsTitle:   'Documents',
     emptyDocs:    'No documents yet.<br>Upload a file to get started.',
@@ -324,7 +324,7 @@ const t = {
     langBtn:      'English',
     hTitle:       'RAG 文档问答',
     sUploadTitle: '上传文档',
-    sUploadHint:  '<strong>点击或拖拽文件</strong><br>支持 PDF 和 TXT 格式',
+    sUploadHint:  '<strong>点击或拖拽文件</strong><br>支持 PDF、DOCX、TXT、MD 格式',
     indexing:     '⏳ 索引中…',
     sDocsTitle:   '文档列表',
     emptyDocs:    '暂无文档。<br>上传文件开始使用。',
@@ -392,7 +392,7 @@ function renderDocs(docs) {
   }
   document.getElementById('docsList').innerHTML = docs.map(d => `
     <div class="doc-item">
-      <span>${d.endsWith('.pdf') ? '📕' : '📄'}</span>
+      <span>${d.endsWith('.pdf') ? '📕' : d.endsWith('.docx') ? '📝' : d.endsWith('.md') ? '📋' : '📄'}</span>
       <span class="doc-name" title="${d}">${d}</span>
       <button class="doc-delete" onclick="deleteDoc('${d.replace(/'/g, "\\'")}')" title="${l.deleteTitle}">✕</button>
     </div>`).join('');

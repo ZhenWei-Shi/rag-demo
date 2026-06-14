@@ -53,10 +53,14 @@ async def upload(file: UploadFile = File(...)):
         text = "\n".join(page.extract_text() or "" for page in reader.pages)
         if not text.strip():
             text = await run_in_threadpool(_ocr_pdf, content)
-    elif filename.endswith(".txt"):
+    elif filename.endswith(".docx"):
+        from docx import Document
+        doc = Document(io.BytesIO(content))
+        text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+    elif filename.endswith((".txt", ".md")):
         text = content.decode("utf-8", errors="ignore")
     else:
-        raise HTTPException(status_code=400, detail="Only PDF and TXT files are supported")
+        raise HTTPException(status_code=400, detail="Only PDF, DOCX, TXT and MD files are supported")
 
     if not text.strip():
         raise HTTPException(status_code=400, detail="Could not extract text from file")
