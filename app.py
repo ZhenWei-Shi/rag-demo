@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -5,11 +6,16 @@ import io
 import PyPDF2
 
 from rag.chunker import chunk_text
-from rag.embedder import embed
+from rag.embedder import embed, warmup
 from rag.store import add_document, delete_document, query, list_documents
 from rag.generator import generate_answer
 
-app = FastAPI(title="RAG Document Q&A")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    warmup()
+    yield
+
+app = FastAPI(title="RAG Document Q&A", lifespan=lifespan)
 
 
 class Question(BaseModel):
