@@ -17,7 +17,7 @@ def _ocr_pdf(content: bytes) -> str:
     def _ocr_page(img):
         return pytesseract.image_to_string(img, lang="chi_sim+eng")
 
-    workers = min(4, len(images))
+    workers = min(2, len(images))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         pages = list(pool.map(_ocr_page, images))
 
