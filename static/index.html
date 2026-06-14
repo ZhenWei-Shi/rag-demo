@@ -393,6 +393,7 @@ async function loadDocs() {
 }
 
 function renderDocs(docs) {
+  currentDocs = docs;
   const l = t[lang];
   document.getElementById('docCount').textContent = docs.length ? `(${docs.length})` : '';
   if (!docs.length) {
@@ -416,6 +417,15 @@ async function deleteDoc(filename) {
 
 // ── Upload ─────────────────────────────────────────────────────────────────
 async function uploadFile(file) {
+  if (currentDocs.includes(file.name)) {
+    const l = t[lang];
+    const msg = lang === 'zh'
+      ? `"${file.name}" 已存在，替换为新版本？`
+      : `"${file.name}" is already indexed. Replace it?`;
+    if (!confirm(msg)) return;
+    await fetch('/documents/' + encodeURIComponent(file.name), { method: 'DELETE' });
+  }
+
   const form = new FormData();
   form.append('file', file);
   document.getElementById('uploadingMsg').classList.add('show');
@@ -453,6 +463,7 @@ const questionInput = document.getElementById('questionInput');
 const sendBtn       = document.getElementById('sendBtn');
 let isLoading = false;
 let history = [];  // [{role: "user"|"assistant", content: "..."}]
+let currentDocs = [];
 
 function clearChat() {
   history = [];
