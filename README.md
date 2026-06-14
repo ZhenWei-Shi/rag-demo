@@ -1,5 +1,12 @@
 # RAG Document Q&A
 
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-vector%20store-FF6B35)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-sentence--transformers-FFD21E?logo=huggingface&logoColor=black)
+![LLM](https://img.shields.io/badge/LLM-DeepSeek%20%7C%20Ollama-4A90D9)
+![License](https://img.shields.io/badge/License-MIT-22c55e)
+
 A production-style **Retrieval-Augmented Generation (RAG)** pipeline that lets you upload PDF or TXT documents and ask questions in natural language — answers are grounded in your own documents, with source citations.
 
 **Live Demo:** http://139.196.52.8 &nbsp;|&nbsp; Supports English and Chinese (中英文双语)
