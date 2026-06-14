@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAG Document Q&A</title>
+<script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -186,6 +187,16 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
   border-radius: 0 4px 4px 0; line-height: 1.55;
 }
 .chunk-source { font-weight: 600; color: var(--primary); margin-bottom: 3px; font-size: 11px; }
+.bubble.md p { margin: 0 0 8px; }
+.bubble.md p:last-child { margin-bottom: 0; }
+.bubble.md ul, .bubble.md ol { padding-left: 20px; margin: 6px 0; }
+.bubble.md li { margin: 3px 0; }
+.bubble.md h1, .bubble.md h2, .bubble.md h3 { font-size: 15px; font-weight: 700; margin: 10px 0 4px; }
+.bubble.md code { background: #f1f5f9; border-radius: 3px; padding: 1px 5px; font-size: 12px; font-family: monospace; }
+.bubble.md pre { background: #f1f5f9; border-radius: 6px; padding: 10px 12px; overflow-x: auto; margin: 8px 0; }
+.bubble.md pre code { background: none; padding: 0; }
+.bubble.md strong { font-weight: 600; }
+.bubble.md blockquote { border-left: 3px solid var(--border); margin: 6px 0; padding-left: 10px; color: var(--muted); }
 .typing { display: flex; gap: 4px; padding: 3px 0; align-items: center; }
 .typing span {
   width: 6px; height: 6px; background: #cbd5e1;
@@ -283,6 +294,8 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 <div class="toast" id="toast"></div>
 
 <script>
+marked.use({ breaks: true, gfm: true });
+
 // ── i18n ───────────────────────────────────────────────────────────────────
 const t = {
   en: {
@@ -475,10 +488,15 @@ function addMessage(role, content, sources = [], chunks = []) {
         </div>`).join('')}
     </div>` : '';
 
+  const bubbleContent = role === 'assistant'
+    ? marked.parse(content)
+    : escHtml(content).replace(/\n/g, '<br>');
+  const mdClass = role === 'assistant' ? ' md' : '';
+
   el.innerHTML = `
     <div class="avatar">${role === 'user' ? '🧑' : '🤖'}</div>
     <div>
-      <div class="bubble">${escHtml(content).replace(/\n/g,'<br>')}</div>
+      <div class="bubble${mdClass}">${bubbleContent}</div>
       ${sourcesHtml}${chunksHtml}
     </div>`;
 
@@ -502,7 +520,9 @@ function addStreamingBubble() {
 }
 
 function updateBubble(el, text) {
-  el.querySelector('.bubble').innerHTML = escHtml(text).replace(/\n/g, '<br>');
+  const bubble = el.querySelector('.bubble');
+  bubble.classList.add('md');
+  bubble.innerHTML = marked.parse(text);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
