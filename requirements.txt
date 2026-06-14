@@ -3,6 +3,8 @@ sentence-transformers
 ollama
 openai
 pypdf2
+pytesseract
+pdf2image
 fastapi
 uvicorn[standard]
 python-multipart

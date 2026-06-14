@@ -6,6 +6,16 @@ from pydantic import BaseModel
 import io
 import PyPDF2
 
+
+def _ocr_pdf(content: bytes) -> str:
+    from pdf2image import convert_from_bytes
+    import pytesseract
+    images = convert_from_bytes(content, dpi=150)
+    return "\n".join(
+        pytesseract.image_to_string(img, lang="chi_sim+eng")
+        for img in images
+    )
+
 from rag.chunker import chunk_text
 from rag.embedder import embed, warmup
 from rag.store import add_document, delete_document, query, list_documents
@@ -32,6 +42,8 @@ async def upload(file: UploadFile = File(...)):
     if filename.endswith(".pdf"):
         reader = PyPDF2.PdfReader(io.BytesIO(content))
         text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        if not text.strip():
+            text = await run_in_threadpool(_ocr_pdf, content)
     elif filename.endswith(".txt"):
         text = content.decode("utf-8", errors="ignore")
     else:
