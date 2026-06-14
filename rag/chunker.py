@@ -1,4 +1,4 @@
-def chunk_text(text: str, max_size: int = 1000, overlap: int = 100) -> list[str]:
+def chunk_text(text: str, max_size: int = 1000, overlap: int = 0) -> list[str]:
     text = " ".join(text.split())
     if not text:
         return []

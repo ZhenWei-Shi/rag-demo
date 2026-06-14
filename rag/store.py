@@ -31,7 +31,7 @@ def delete_document(filename: str) -> None:
     except Exception:
         pass
 
-def query(embedding: list[float], n_results: int = 4) -> list[dict]:
+def query(embedding: list[float], n_results: int = 6) -> list[dict]:
     col = _col()
     count = col.count()
     if count == 0:
