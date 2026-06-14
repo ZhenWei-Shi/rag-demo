@@ -512,14 +512,19 @@ async function sendQuestion() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: q, history })
     });
-    const data = await res.json();
     document.getElementById('typing')?.remove();
-    addMessage('assistant', data.answer, data.sources || [], data.chunks || []);
-    history.push({ role: 'user', content: q });
-    history.push({ role: 'assistant', content: data.answer });
-  } catch {
+    if (!res.ok) {
+      const msg = await res.text().catch(() => `HTTP ${res.status}`);
+      addMessage('assistant', `Error ${res.status}: ${msg}`);
+    } else {
+      const data = await res.json();
+      addMessage('assistant', data.answer, data.sources || [], data.chunks || []);
+      history.push({ role: 'user', content: q });
+      history.push({ role: 'assistant', content: data.answer });
+    }
+  } catch (e) {
     document.getElementById('typing')?.remove();
-    addMessage('assistant', t[lang].errServer);
+    addMessage('assistant', t[lang].errServer + (e?.message ? ` (${e.message})` : ''));
   } finally {
     isLoading = false;
     sendBtn.disabled = false;
