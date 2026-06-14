@@ -159,6 +159,16 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
   border-radius: 12px; padding: 11px 15px;
   font-size: 14px; line-height: 1.65;
 }
+.copy-btn {
+  display: block; margin-top: 6px; margin-left: auto;
+  background: none; border: 1px solid var(--border);
+  border-radius: 5px; padding: 3px 10px; font-size: 11px;
+  cursor: pointer; color: var(--muted); font-family: inherit;
+  opacity: 0; transition: opacity 0.15s, background 0.15s;
+}
+.message.assistant:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: var(--bg); color: var(--text); }
+.copy-btn.ok { color: #16a34a; border-color: #16a34a; }
 .message.user .bubble {
   background: var(--primary); border-color: var(--primary);
   color: white; border-radius: 12px 4px 12px 12px;
@@ -526,6 +536,34 @@ function updateBubble(el, text) {
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
+function addCopyBtn(el, text) {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.onclick = async () => {
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      btn.textContent = '✓ Copied';
+      btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 2000);
+    } catch(e) {
+      btn.textContent = 'Failed';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    }
+  };
+  el.querySelector('.msg-body').appendChild(btn);
+}
+
 function attachMeta(el, sources, chunks) {
   const l = t[lang];
   const body = el.querySelector('.msg-body');
@@ -601,6 +639,7 @@ async function sendQuestion() {
           updateBubble(assistantEl, (assistantEl._text = (assistantEl._text || '') + evt.content));
         } else if (evt.type === 'done') {
           updateBubble(assistantEl, evt.answer);
+          addCopyBtn(assistantEl, evt.answer);
           attachMeta(assistantEl, evt.sources, evt.chunks);
           history.push({ role: 'user', content: q });
           history.push({ role: 'assistant', content: evt.answer });
