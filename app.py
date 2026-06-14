@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 import io
 import PyPDF2
@@ -40,7 +41,7 @@ async def upload(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Could not extract text from file")
 
     chunks = chunk_text(text)
-    embeddings = embed(chunks)
+    embeddings = await run_in_threadpool(embed, chunks)
     add_document(chunks, embeddings, filename)
 
     return {"filename": filename, "chunks": len(chunks)}
@@ -62,7 +63,7 @@ async def ask(body: Question):
     if not body.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty")
 
-    q_embedding = embed([body.question])[0]
+    q_embedding = (await run_in_threadpool(embed, [body.question]))[0]
     chunks = query(q_embedding)
 
     if not chunks:
