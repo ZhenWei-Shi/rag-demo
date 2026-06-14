@@ -486,13 +486,58 @@ function addMessage(role, content, sources = [], chunks = []) {
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-function showTyping() {
+function addStreamingBubble() {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
   const el = document.createElement('div');
   el.className = 'message assistant';
-  el.id = 'typing';
-  el.innerHTML = `<div class="avatar">🤖</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  el.innerHTML = `
+    <div class="avatar">🤖</div>
+    <div class="msg-body">
+      <div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+    </div>`;
   messagesEl.appendChild(el);
   messagesEl.scrollTop = messagesEl.scrollHeight;
+  return el;
+}
+
+function updateBubble(el, text) {
+  el.querySelector('.bubble').innerHTML = escHtml(text).replace(/\n/g, '<br>');
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function attachMeta(el, sources, chunks) {
+  const l = t[lang];
+  const body = el.querySelector('.msg-body');
+
+  if (sources.length) {
+    const src = document.createElement('div');
+    src.className = 'sources';
+    src.innerHTML = `<span class="sources-label">${l.sourcesLabel}</span>
+      ${sources.map(s => `<span class="source-chip">${escHtml(s)}</span>`).join('')}`;
+    body.appendChild(src);
+  }
+
+  if (chunks.length) {
+    const btn = document.createElement('button');
+    btn.className = 'chunks-toggle';
+    btn.textContent = l.showChunks;
+    const list = document.createElement('div');
+    list.className = 'chunks-list';
+    list.style.display = 'none';
+    list.innerHTML = chunks.map(c => `
+      <div class="chunk-item">
+        <div class="chunk-source">📎 ${escHtml(c.source)}</div>
+        ${escHtml(c.text)}
+      </div>`).join('');
+    btn.onclick = () => {
+      const open = list.style.display !== 'none';
+      list.style.display = open ? 'none' : 'flex';
+      btn.textContent = open ? l.showChunks : l.hideChunks;
+    };
+    body.appendChild(btn);
+    body.appendChild(list);
+  }
 }
 
 async function sendQuestion() {
@@ -504,27 +549,46 @@ async function sendQuestion() {
   questionInput.style.height = 'auto';
 
   addMessage('user', q);
-  showTyping();
+  const assistantEl = addStreamingBubble();
 
   try {
-    const res  = await fetch('/ask', {
+    const res = await fetch('/ask/stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: q, history })
     });
-    document.getElementById('typing')?.remove();
+
     if (!res.ok) {
       const msg = await res.text().catch(() => `HTTP ${res.status}`);
-      addMessage('assistant', `Error ${res.status}: ${msg}`);
-    } else {
-      const data = await res.json();
-      addMessage('assistant', data.answer, data.sources || [], data.chunks || []);
-      history.push({ role: 'user', content: q });
-      history.push({ role: 'assistant', content: data.answer });
+      updateBubble(assistantEl, `Error ${res.status}: ${msg}`);
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const parts = buffer.split('\n\n');
+      buffer = parts.pop();
+      for (const part of parts) {
+        if (!part.startsWith('data: ')) continue;
+        const evt = JSON.parse(part.slice(6));
+        if (evt.type === 'token') {
+          updateBubble(assistantEl, (assistantEl._text = (assistantEl._text || '') + evt.content));
+        } else if (evt.type === 'done') {
+          updateBubble(assistantEl, evt.answer);
+          attachMeta(assistantEl, evt.sources, evt.chunks);
+          history.push({ role: 'user', content: q });
+          history.push({ role: 'assistant', content: evt.answer });
+        }
+      }
     }
   } catch (e) {
-    document.getElementById('typing')?.remove();
-    addMessage('assistant', t[lang].errServer + (e?.message ? ` (${e.message})` : ''));
+    updateBubble(assistantEl, t[lang].errServer + (e?.message ? ` (${e.message})` : ''));
   } finally {
     isLoading = false;
     sendBtn.disabled = false;

@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 import io
+import json
 import PyPDF2
 
 
@@ -26,7 +28,7 @@ def _ocr_pdf(content: bytes) -> str:
 from rag.chunker import chunk_text
 from rag.embedder import embed, warmup
 from rag.store import add_document, delete_document, query, list_documents
-from rag.generator import generate_answer
+from rag.generator import generate_answer, stream_answer
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -96,6 +98,34 @@ async def ask(body: Question):
     sources = list(dict.fromkeys(c["source"] for c in chunks))
 
     return {"answer": answer, "sources": sources, "chunks": chunks}
+
+
+@app.post("/ask/stream")
+async def ask_stream(body: Question):
+    if not body.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty")
+
+    q_embedding = (await run_in_threadpool(embed, [body.question]))[0]
+    chunks = query(q_embedding)
+
+    if not chunks:
+        msg = "No documents have been uploaded yet. Please upload a PDF or text file first."
+        async def _empty():
+            yield f"data: {json.dumps({'type': 'token', 'content': msg})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'sources': [], 'chunks': [], 'answer': msg})}\n\n"
+        return StreamingResponse(_empty(), media_type="text/event-stream")
+
+    question, history, captured = body.question, body.history, chunks
+
+    def _generate():
+        full = ""
+        for token in stream_answer(question, captured, history):
+            full += token
+            yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        sources = list(dict.fromkeys(c["source"] for c in captured))
+        yield f"data: {json.dumps({'type': 'done', 'sources': sources, 'chunks': captured, 'answer': full})}\n\n"
+
+    return StreamingResponse(_generate(), media_type="text/event-stream")
 
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

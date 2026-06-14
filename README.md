@@ -48,6 +48,7 @@ flowchart LR
 | **Multi-turn conversation** | Last 6 turns of chat history passed to LLM for context |
 | **Source citations** | Every answer shows which document it came from |
 | **Chunk inspection** | Expand to see the exact passages that informed the answer |
+| **Streaming output** | Tokens stream to the UI in real time (Server-Sent Events) |
 | **Pluggable LLM** | DeepSeek (cloud) or Ollama (local, fully private) via env var |
 | **Persistent index** | ChromaDB persists to disk; documents survive server restarts |
 | **Bilingual UI** | Toggle between English and Chinese |
