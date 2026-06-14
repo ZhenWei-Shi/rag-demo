@@ -1,7 +1,6 @@
-import ollama
+import os
 
-MODEL = "llama3.2"
-MAX_HISTORY_TURNS = 6  # keep last 6 messages (3 turns) to avoid context overflow
+MAX_HISTORY_TURNS = 6
 
 def generate_answer(question: str, context_chunks: list[dict], history: list[dict] | None = None) -> str:
     context = "\n\n---\n\n".join(
@@ -18,5 +17,17 @@ def generate_answer(question: str, context_chunks: list[dict], history: list[dic
         messages.extend(history[-MAX_HISTORY_TURNS:])
     messages.append({"role": "user", "content": question})
 
-    response = ollama.chat(model=MODEL, messages=messages)
-    return response["message"]["content"]
+    provider = os.getenv("LLM_PROVIDER", "ollama")
+
+    if provider == "groq":
+        from groq import Groq
+        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        resp = client.chat.completions.create(
+            model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+            messages=messages,
+        )
+        return resp.choices[0].message.content
+    else:
+        import ollama
+        response = ollama.chat(model=os.getenv("OLLAMA_MODEL", "llama3.2"), messages=messages)
+        return response["message"]["content"]
