@@ -19,11 +19,14 @@ def generate_answer(question: str, context_chunks: list[dict], history: list[dic
 
     provider = os.getenv("LLM_PROVIDER", "ollama")
 
-    if provider == "groq":
-        from groq import Groq
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    if provider == "openai_compat":
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=os.getenv("LLM_API_KEY"),
+            base_url=os.getenv("LLM_BASE_URL"),
+        )
         resp = client.chat.completions.create(
-            model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+            model=os.getenv("LLM_MODEL"),
             messages=messages,
         )
         return resp.choices[0].message.content

@@ -1,7 +1,7 @@
 chromadb
 sentence-transformers
 ollama
-groq
+openai
 pypdf2
 fastapi
 uvicorn[standard]
