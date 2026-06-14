@@ -10,11 +10,18 @@ import PyPDF2
 def _ocr_pdf(content: bytes) -> str:
     from pdf2image import convert_from_bytes
     import pytesseract
-    images = convert_from_bytes(content, dpi=150)
-    return "\n".join(
-        pytesseract.image_to_string(img, lang="chi_sim+eng")
-        for img in images
-    )
+    from concurrent.futures import ThreadPoolExecutor
+
+    images = convert_from_bytes(content, dpi=120)
+
+    def _ocr_page(img):
+        return pytesseract.image_to_string(img, lang="chi_sim+eng")
+
+    workers = min(4, len(images))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        pages = list(pool.map(_ocr_page, images))
+
+    return "\n".join(pages)
 
 from rag.chunker import chunk_text
 from rag.embedder import embed, warmup
