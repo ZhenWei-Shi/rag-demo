@@ -416,7 +416,6 @@ function applyLang() {
   document.getElementById('hTitle').textContent      = l.hTitle;
   document.getElementById('sUploadTitle').textContent = l.sUploadTitle;
   document.getElementById('sUploadHint').innerHTML   = l.sUploadHint;
-  document.getElementById('uploadingMsg').textContent = l.indexing;
   document.getElementById('wTitle').textContent      = l.wTitle;
   document.getElementById('wDesc').textContent       = l.wDesc;
   document.getElementById('questionInput').placeholder = l.placeholder;
@@ -491,7 +490,18 @@ async function uploadFile(file) {
 
   const form = new FormData();
   form.append('file', file);
-  document.getElementById('uploadingMsg').classList.add('show');
+
+  // Show staged status messages so users know OCR uploads are still running
+  const msgEl = document.getElementById('uploadingMsg');
+  const isZh = lang === 'zh';
+  const stages = isZh
+    ? ['⏳ 上传中…', '📄 提取文本…', '🔍 OCR 识别中，预计 30–60 秒…']
+    : ['⏳ Uploading…', '📄 Extracting text…', '🔍 OCR processing (~30–60s)…'];
+  msgEl.textContent = stages[0];
+  msgEl.classList.add('show');
+  const t1 = setTimeout(() => { msgEl.textContent = stages[1]; }, 4000);
+  const t2 = setTimeout(() => { msgEl.textContent = stages[2]; }, 14000);
+
   try {
     const res  = await fetch('/upload', { method: 'POST', body: form });
     const data = await res.json();
@@ -501,7 +511,9 @@ async function uploadFile(file) {
   } catch (e) {
     toast(t[lang].toastErr(e.message));
   } finally {
-    document.getElementById('uploadingMsg').classList.remove('show');
+    clearTimeout(t1);
+    clearTimeout(t2);
+    msgEl.classList.remove('show');
   }
 }
 

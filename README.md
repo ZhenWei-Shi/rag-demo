@@ -21,7 +21,7 @@ A production-style **Retrieval-Augmented Generation (RAG)** pipeline that lets y
 flowchart LR
     subgraph Ingestion
         A[PDF / TXT Upload] --> B[Text Extraction\nPyPDF2]
-        B -->|empty?| C[OCR Fallback\nTesseract chi_sim+eng]
+        B -->|empty?| C[OCR Fallback\nAliyun Cloud / Tesseract]
         B --> D[Sentence-boundary\nChunker]
         C --> D
         D --> E[Embedder\nall-MiniLM-L6-v2]
@@ -50,7 +50,7 @@ flowchart LR
 | Feature | Detail |
 |---|---|
 | **PDF & TXT upload** | Drag-and-drop or click to upload |
-| **OCR fallback** | Scanned PDFs auto-detected (empty text → Tesseract, 2-thread parallel) |
+| **OCR fallback** | Scanned PDFs auto-detected; uses Aliyun cloud OCR (4-thread parallel) or Tesseract locally |
 | **Semantic retrieval** | `all-MiniLM-L6-v2` embeddings + ChromaDB, top-6 chunks |
 | **Multi-turn conversation** | Last 6 turns of chat history passed to LLM for context |
 | **Source citations** | Every answer shows which document it came from |
@@ -70,7 +70,7 @@ flowchart LR
 | Embedding Model | `all-MiniLM-L6-v2` (sentence-transformers) |
 | Vector Store | ChromaDB (persistent, local) |
 | LLM | DeepSeek API (cloud) or Ollama (local) |
-| PDF Parsing | PyPDF2 + pdf2image + Tesseract (OCR fallback) |
+| PDF Parsing | PyPDF2 + pdf2image + Aliyun OCR (cloud, fast) / Tesseract (local fallback) |
 | Frontend | Vanilla JS, no build step |
 | Deployment | Alibaba Cloud ECS, systemd + nginx reverse proxy |
 
