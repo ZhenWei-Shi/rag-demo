@@ -1,0 +1,20 @@
+# EN: Docker Compose configuration for running the RAG app with DeepSeek (cloud LLM).
+#     Copy .env.example to .env and fill in your API key before running.
+# ZH: 使用 DeepSeek（云端 LLM）运行 RAG 应用的 Docker Compose 配置。
+#     运行前将 .env.example 复制为 .env 并填入 API Key。
+
+services:
+  rag-demo:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # EN: Persist the vector store data outside the container.
+      # ZH: 将向量数据库数据持久化到容器外部。
+      - chroma_data:/app/chroma_data
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

@@ -1,0 +1,32 @@
+# EN: Exclude files that should not be copied into the Docker image.
+# ZH: 排除不应复制进 Docker 镜像的文件。
+
+# Python cache / Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Virtual environments / 虚拟环境
+venv/
+.venv/
+env/
+
+# ChromaDB data (mounted as a volume) / ChromaDB 数据（通过 volume 挂载）
+chroma_data/
+
+# Environment variables (never bake secrets into the image) / 环境变量（禁止将密钥打入镜像）
+.env
+*.env
+
+# Git / Git 相关
+.git/
+.gitignore
+
+# Docs / 文档
+docs/
+README.md
+
+# Deploy scripts / 部署脚本
+deploy_*.py
+check_*.py

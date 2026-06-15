@@ -111,7 +111,20 @@ rag-demo/
 
 ## Quick Start
 
-**Option A — Cloud LLM (DeepSeek)**
+**Option A — Docker (recommended)**
+
+```bash
+git clone https://github.com/ZhenWei-Shi/rag-demo.git
+cd rag-demo
+cp .env.example .env          # fill in your API key
+docker compose up --build
+```
+
+Open `http://localhost:8000`. ChromaDB data is persisted in a Docker volume.
+
+---
+
+**Option B — Cloud LLM (DeepSeek)**
 
 ```bash
 git clone https://github.com/ZhenWei-Shi/rag-demo.git
@@ -127,7 +140,7 @@ export LLM_MODEL=deepseek-chat
 python app.py
 ```
 
-**Option B — Local LLM (Ollama, fully private)**
+**Option C — Local LLM (Ollama, fully private)**
 
 ```bash
 # Install Ollama: https://ollama.com
