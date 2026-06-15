@@ -57,6 +57,45 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
   font-family: inherit;
 }
 .lang-btn:hover { background: rgba(255,255,255,0.22); }
+.menu-btn {
+  display: none;
+  background: none; border: none; color: white;
+  font-size: 20px; cursor: pointer; padding: 4px 6px; line-height: 1;
+}
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45); z-index: 40;
+}
+.sidebar-overlay.show { display: block; }
+
+@media (max-width: 640px) {
+  html { overflow-x: hidden; }
+  body { height: 100dvh; overflow-x: hidden; }
+
+  header { padding: 0 10px; gap: 6px; }
+  header h1 { font-size: 14px; }
+  .badge { display: none; }
+  .menu-btn { display: block; }
+
+  .layout { grid-template-columns: 1fr; }
+  .chat-area { grid-column: 1; min-height: 0; width: 100%; }
+
+  .sidebar {
+    position: fixed; top: 56px; left: 0; bottom: 0;
+    width: 280px; z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .messages { padding: 14px 12px; gap: 16px; }
+  .message.user { max-width: 88%; }
+  .message.assistant { max-width: 96%; }
+
+  .input-area { padding: 10px 12px; gap: 8px; }
+  .new-chat-btn { padding: 0 10px; font-size: 12px; }
+}
 .layout {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -260,11 +299,13 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 <body>
 
 <header>
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
   <span style="font-size:20px">🔍</span>
   <h1 id="hTitle">RAG Document Q&amp;A</h1>
   <span class="badge">DeepSeek + ChromaDB</span>
   <button class="lang-btn" id="langBtn" onclick="toggleLang()">中文</button>
 </header>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -306,6 +347,11 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 <script>
 marked.use({ breaks: true, gfm: true });
 
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
 // ── i18n ───────────────────────────────────────────────────────────────────
 const t = {
   en: {
@@ -318,7 +364,7 @@ const t = {
     sDocsTitle:   'Documents',
     emptyDocs:    'No documents yet.<br>Upload a file to get started.',
     wTitle:       'Ask your documents anything',
-    wDesc:        'Upload a PDF or text file on the left, then ask questions about its content. Answers are grounded in your documents.',
+    wDesc:        'Upload a PDF, DOCX, TXT or MD file, then ask questions about its content. Answers are grounded in your documents.',
     placeholder:  'Ask a question… (Enter to send)',
     showChunks:   'Show retrieved chunks',
     hideChunks:   'Hide chunks',
@@ -339,7 +385,7 @@ const t = {
     sDocsTitle:   '文档列表',
     emptyDocs:    '暂无文档。<br>上传文件开始使用。',
     wTitle:       '向你的文档提问',
-    wDesc:        '在左侧上传 PDF 或文本文件，然后就文档内容提问。答案直接来源于你的文档。',
+    wDesc:        '上传 PDF、DOCX、TXT 或 MD 文件，然后就文档内容提问。答案直接来源于你的文档。',
     placeholder:  '输入问题…（Enter 发送，Shift+Enter 换行）',
     showChunks:   '查看检索片段',
     hideChunks:   '收起片段',
