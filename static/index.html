@@ -319,7 +319,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
       <div class="upload-zone" id="uploadZone">
         <input type="file" id="fileInput" accept=".pdf,.txt,.docx,.md" multiple>
         <div class="icon">📄</div>
-        <p id="sUploadHint"><strong>Click or drag &amp; drop</strong><br>PDF or TXT files</p>
+        <p id="sUploadHint"><strong>Click or drag &amp; drop</strong><br>PDF, DOCX, TXT, MD</p>
       </div>
       <div class="uploading" id="uploadingMsg" data-i18n="indexing">⏳ Indexing…</div>
     </div>
@@ -336,7 +336,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
       <div class="welcome" id="welcome">
         <div class="icon">💬</div>
         <h2 id="wTitle">Ask your documents anything</h2>
-        <p id="wDesc">Upload a PDF or text file on the left, then ask questions about its content. Answers are grounded in your documents.</p>
+        <p id="wDesc">Upload a PDF, DOCX, TXT or MD file, then ask questions about its content. Answers are grounded in your documents.</p>
       </div>
     </div>
     <div class="input-area">
@@ -447,17 +447,29 @@ function renderDocs(docs) {
   currentDocs = docs;
   const l = t[lang];
   document.getElementById('docCount').textContent = docs.length ? `(${docs.length})` : '';
+  const list = document.getElementById('docsList');
   if (!docs.length) {
-    document.getElementById('docsList').innerHTML =
-      `<div class="empty-docs" id="emptyDocs">${l.emptyDocs}</div>`;
+    list.innerHTML = `<div class="empty-docs" id="emptyDocs">${l.emptyDocs}</div>`;
     return;
   }
-  document.getElementById('docsList').innerHTML = docs.map(d => `
-    <div class="doc-item">
-      <span>${d.endsWith('.pdf') ? '📕' : d.endsWith('.docx') ? '📝' : d.endsWith('.md') ? '📋' : '📄'}</span>
-      <span class="doc-name" title="${d}">${d}</span>
-      <button class="doc-delete" onclick="deleteDoc('${d.replace(/'/g, "\\'")}')" title="${l.deleteTitle}">✕</button>
-    </div>`).join('');
+  // EN: Use escHtml() on filenames and data attributes instead of inline onclick
+  //     to prevent XSS from maliciously crafted filenames.
+  // ZH: 对文件名使用 escHtml() 并通过 data 属性传递，
+  //     避免恶意文件名通过 inline onclick 注入脚本（XSS）。
+  list.innerHTML = docs.map(d => {
+    const icon = d.endsWith('.pdf') ? '📕' : d.endsWith('.docx') ? '📝' : d.endsWith('.md') ? '📋' : '📄';
+    const safe = escHtml(d);
+    return `<div class="doc-item" data-filename="${safe}">
+      <span>${icon}</span>
+      <span class="doc-name" title="${safe}">${safe}</span>
+      <button class="doc-delete" title="${l.deleteTitle}">✕</button>
+    </div>`;
+  }).join('');
+  // EN: Attach delete handlers via event listeners, not inline onclick.
+  // ZH: 通过事件监听器绑定删除操作，不使用 inline onclick。
+  list.querySelectorAll('.doc-delete').forEach(btn => {
+    btn.addEventListener('click', () => deleteDoc(btn.closest('.doc-item').dataset.filename));
+  });
 }
 
 async function deleteDoc(filename) {
