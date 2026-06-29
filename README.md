@@ -9,7 +9,7 @@
 
 A production-style **Retrieval-Augmented Generation (RAG)** pipeline that lets you upload PDF or TXT documents and ask questions in natural language — answers are grounded in your own documents, with source citations.
 
-**Live Demo:** http://139.196.52.8 &nbsp;|&nbsp; Supports English and Chinese (中英文双语)
+**Live Demo:** https://zhenweishi-rag.com &nbsp;|&nbsp; Supports English and Chinese (中英文双语)
 
 ![demo screenshot](docs/screenshot.png)
 
