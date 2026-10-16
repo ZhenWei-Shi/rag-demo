@@ -1,0 +1,14 @@
+{
+  "name": "rag-demo-evaluation",
+  "private": true,
+  "scripts": {
+    "eval:report": "node evaluation/render.cjs",
+    "test:eval-adapter": "node --test evaluation/replay.test.cjs"
+  },
+  "devDependencies": {
+    "promptfoo": "0.124.1"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  }
+}

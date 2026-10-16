@@ -33,3 +33,7 @@ Thumbs.db
 
 # Test cache
 .pytest_cache/
+
+# Local evaluation outputs and tooling
+node_modules/
+evaluation/results/
