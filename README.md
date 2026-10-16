@@ -1,5 +1,17 @@
 # RAG Document Q&A
 
+## Reliability update (2026-10-16)
+
+[Development workflow, AI contributions, reproducible checks and limits](docs/DEVELOPMENT.md).
+
+- Model answers are rendered through locally hosted DOMPurify (Apache-2.0 option; see `static/vendor/DOMPurify.LICENSE`). Markdown, code blocks and safe links remain supported.
+- Document replacement stages new Chroma chunks and atomically selects them through `chroma_data/versions.sqlite3`. Back up the entire data directory, including that file. Run **one application worker per data directory**. Existing legacy chunks remain readable; uncommitted revisions are invisible after restart.
+- Retrieval combines dense candidates with BM25L, reciprocal rank fusion and MMR diversity selection, returning up to six active passages. No second model is loaded. The disclosed 18-document/12-query development check recalled 11/12 target passages with dense search and 12/12 with hybrid search; this is not a general accuracy estimate.
+- New uploads use the embedding model's actual tokenizer and sequence limit, including special tokens. Existing documents must be reindexed to receive the new chunking.
+- API history accepts at most six user/assistant messages, 8,000 characters per message and 24,000 overall. The UI omits oversized whole turns with a visible notice; displayed answers remain intact.
+- The hosted demo uses a separate `RAG_DATA_DIR=/opt/rag-demo/public_demo_data` with fictional public samples from `docs/public-demo-*.md`. The previous corpus is privately archived outside the website. Uploads to this unauthenticated demo are shared across visitors; never upload private files. Keep public-demo data out of Git and Docker build contexts.
+- PDF/DOCX/TXT/MD extensions are case insensitive; DOCX body tables are extracted. Invalid document/UTF-8 input returns a client error. Generation failures emit an explicit SSE error event.
+
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)
 ![ChromaDB](https://img.shields.io/badge/ChromaDB-vector%20store-FF6B35)
@@ -7,7 +19,7 @@
 ![LLM](https://img.shields.io/badge/LLM-DeepSeek%20%7C%20Ollama-4A90D9)
 ![License](https://img.shields.io/badge/License-MIT-22c55e)
 
-A production-style **Retrieval-Augmented Generation (RAG)** pipeline that lets you upload PDF or TXT documents and ask questions in natural language — answers are grounded in your own documents, with source citations.
+A production-style **Retrieval-Augmented Generation (RAG)** pipeline that lets you upload PDF, DOCX, TXT or Markdown documents and ask questions in natural language — answers are grounded in your own documents, with source citations.
 
 **Live Demo:** https://zhenweishi-rag.com &nbsp;|&nbsp; Supports English and Chinese (中英文双语)
 
@@ -20,7 +32,7 @@ A production-style **Retrieval-Augmented Generation (RAG)** pipeline that lets y
 ```mermaid
 flowchart LR
     subgraph Ingestion
-        A[PDF / TXT Upload] --> B[Text Extraction\nPyPDF2]
+        A[PDF / DOCX / TXT / MD Upload] --> B[Text Extraction\nPyPDF2]
         B -->|empty?| C[OCR Fallback\nAliyun Cloud / Tesseract]
         B --> D[Sentence-boundary\nChunker]
         C --> D
@@ -30,17 +42,17 @@ flowchart LR
 
     subgraph Query
         G[User Question] --> H[Embed Question]
-        H --> I[Vector Search\ntop-6 chunks]
+        H --> I[Dense + BM25L + RRF + MMR\ntop-6 active chunks]
         F --> I
         I --> J[LLM Generator\nDeepSeek / Ollama]
-        K[Chat History\nlast 6 turns] --> J
+        K[Chat History\nlast 6 messages] --> J
         J --> L[Answer + Citations]
     end
 ```
 
 **Request flow:**
 1. User uploads a document → text is extracted, split into sentence-aware chunks, embedded, and stored in ChromaDB
-2. User asks a question → question is embedded, top-6 semantically similar chunks are retrieved, passed to LLM with conversation history
+2. User asks a question → question is embedded, dense and BM25L candidates are fused and selected for relevance and diversity, passed to LLM with conversation history
 3. LLM responds with an answer grounded in the retrieved context; UI shows source citations and inspectable chunks
 
 ---
@@ -49,10 +61,10 @@ flowchart LR
 
 | Feature | Detail |
 |---|---|
-| **PDF & TXT upload** | Drag-and-drop or click to upload |
+| **PDF / DOCX / TXT / MD upload** | Drag-and-drop or click to upload |
 | **OCR fallback** | Scanned PDFs auto-detected; uses Aliyun cloud OCR (4-thread parallel) or Tesseract locally |
-| **Semantic retrieval** | `all-MiniLM-L6-v2` embeddings + ChromaDB, top-6 chunks |
-| **Multi-turn conversation** | Last 6 turns of chat history passed to LLM for context |
+| **Hybrid retrieval** | MiniLM + ChromaDB, BM25L + RRF + MMR, top-6 active chunks |
+| **Multi-turn conversation** | Last 6 messages of chat history passed to LLM for context |
 | **Source citations** | Every answer shows which document it came from |
 | **Chunk inspection** | Expand to see the exact passages that informed the answer |
 | **Streaming output** | Tokens stream to the UI in real time (Server-Sent Events) |
@@ -72,14 +84,14 @@ flowchart LR
 | LLM | DeepSeek API (cloud) or Ollama (local) |
 | PDF Parsing | PyPDF2 + pdf2image + Aliyun OCR (cloud, fast) / Tesseract (local fallback) |
 | Frontend | Vanilla JS, no build step |
-| Deployment | Alibaba Cloud ECS, systemd + nginx reverse proxy |
+| Deployment | Alibaba Cloud lightweight server, systemd + nginx reverse proxy |
 
 ---
 
 ## Design Decisions
 
 **Why sentence-boundary chunking instead of fixed character splits?**
-Splitting mid-sentence breaks semantic units and confuses the retrieval model. The chunker scans backward from the split point for sentence-ending punctuation (`. ! ? ;`) so each chunk is a complete thought.
+Splitting mid-sentence breaks semantic units and confuses the retrieval model. The chunker scans backward from the split point for sentence-ending punctuation (`. ! ? ;`) when it fits the actual tokenizer budget. Long sentences are split to stay within the embedding limit, so sentence completeness is not guaranteed.
 
 **Why ChromaDB instead of Pinecone?**
 ChromaDB runs locally with zero setup and persists to disk — no API key, no cost, no network call on every query. For a single-server demo this is faster and simpler. Pinecone would be the right call when scaling to multiple servers or needing managed infrastructure.
@@ -111,7 +123,7 @@ rag-demo/
 
 ## Quick Start
 
-**Option A — Docker (recommended)**
+**Option A — Docker (optional; image build not verified in the 2026-10-16 test environment)**
 
 ```bash
 git clone https://github.com/ZhenWei-Shi/rag-demo.git
@@ -160,7 +172,8 @@ Open `http://localhost:8000` in your browser.
 
 | Method | Path | Description |
 |---|---|---|
-| `POST` | `/upload` | Upload and index a PDF or TXT file |
+| `POST` | `/upload` | Upload and index PDF, DOCX, TXT or MD |
+| `POST` | `/ask/stream` | Stream answer events and final sources |
 | `POST` | `/ask` | Ask a question; returns answer, sources, and retrieved chunks |
 | `GET` | `/documents` | List all indexed documents |
 | `DELETE` | `/documents/{filename}` | Remove a document from the index |

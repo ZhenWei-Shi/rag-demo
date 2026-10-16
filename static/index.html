@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAG Document Q&A</title>
 <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+<script src="/vendor/purify.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -67,6 +68,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
   background: rgba(0,0,0,0.45); z-index: 40;
 }
 .sidebar-overlay.show { display: block; }
+.privacy-note { font-size: 11px; line-height: 1.45; color: var(--muted); margin-top: 8px; }
 .layout {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -322,6 +324,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
         <p id="sUploadHint"><strong>Click or drag &amp; drop</strong><br>PDF, DOCX, TXT, MD</p>
       </div>
       <div class="uploading" id="uploadingMsg" data-i18n="indexing">⏳ Indexing…</div>
+      <p class="privacy-note" id="privacyNotice">Shared demo: uploads are visible to all visitors. Use public sample files only.</p>
     </div>
     <div class="docs-wrapper">
       <h2 id="sDocsTitle">Documents <span id="docCount" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0"></span></h2>
@@ -350,7 +353,7 @@ header h1 { font-size: 17px; font-weight: 600; flex: 1; }
 <div class="toast" id="toast"></div>
 
 <script>
-marked.use({ breaks: true, gfm: true });
+if (window.marked) marked.use({ breaks: true, gfm: true });
 
 function toggleSidebar() {
   document.querySelector('.sidebar').classList.toggle('open');
@@ -366,6 +369,7 @@ const t = {
     sUploadTitle: 'Upload Document',
     sUploadHint:  '<strong>Click or drag &amp; drop</strong><br>PDF, DOCX, TXT, MD',
     indexing:     '⏳ Indexing…',
+    privacyNotice: 'Shared demo: uploads are visible to all visitors. Use public sample files only.',
     sDocsTitle:   'Documents',
     emptyDocs:    'No documents yet.<br>Upload a file to get started.',
     wTitle:       'Ask your documents anything',
@@ -375,7 +379,8 @@ const t = {
     hideChunks:   'Hide chunks',
     sourcesLabel: 'Sources:',
     deleteTitle:  'Remove',
-    errServer:    'Error: could not reach the server. Make sure Ollama is running.',
+    copy: 'Copy', copied: '✓ Copied', copyFailed: 'Failed',
+    errServer:    'The answer could not be completed. Please retry.',
     toastIndexed: (f, n) => `✓ Indexed: ${f} (${n} chunks)`,
     toastRemoved: f => `Removed: ${f}`,
     toastErr:     msg => `✗ ${msg}`,
@@ -387,6 +392,7 @@ const t = {
     sUploadTitle: '上传文档',
     sUploadHint:  '<strong>点击或拖拽文件</strong><br>支持 PDF、DOCX、TXT、MD 格式',
     indexing:     '⏳ 索引中…',
+    privacyNotice: '共享演示：上传文档对所有访客可见，请仅使用公开样例文件。',
     sDocsTitle:   '文档列表',
     emptyDocs:    '暂无文档。<br>上传文件开始使用。',
     wTitle:       '向你的文档提问',
@@ -396,7 +402,8 @@ const t = {
     hideChunks:   '收起片段',
     sourcesLabel: '来源：',
     deleteTitle:  '删除',
-    errServer:    '错误：无法连接服务器，请确认 Ollama 正在运行。',
+    copy: '复制', copied: '✓ 已复制', copyFailed: '复制失败',
+    errServer:    '回答未能完成，请重试。',
     toastIndexed: (f, n) => `✓ 已索引：${f}（${n} 个片段）`,
     toastRemoved: f => `已删除：${f}`,
     toastErr:     msg => `✗ ${msg}`,
@@ -412,12 +419,20 @@ function toggleLang() {
 
 function applyLang() {
   const l = t[lang];
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.sources-label').forEach(el => { el.textContent = l.sourcesLabel; });
+  document.querySelectorAll('.chunks-toggle').forEach(btn => {
+    btn.textContent = btn.nextElementSibling.style.display === 'none' ? l.showChunks : l.hideChunks;
+  });
+  document.querySelectorAll('.doc-delete').forEach(btn => { btn.title = l.deleteTitle; });
+  document.querySelectorAll('.copy-btn').forEach(btn => { btn.textContent = btn.classList.contains('ok') ? l.copied : l.copy; });
   document.getElementById('langBtn').textContent     = l.langBtn;
   document.getElementById('hTitle').textContent      = l.hTitle;
   document.getElementById('sUploadTitle').textContent = l.sUploadTitle;
   document.getElementById('sUploadHint').innerHTML   = l.sUploadHint;
-  document.getElementById('wTitle').textContent      = l.wTitle;
-  document.getElementById('wDesc').textContent       = l.wDesc;
+  document.getElementById('privacyNotice').textContent = l.privacyNotice;
+  if (document.getElementById('wTitle')) document.getElementById('wTitle').textContent = l.wTitle;
+  if (document.getElementById('wDesc')) document.getElementById('wDesc').textContent = l.wDesc;
   document.getElementById('questionInput').placeholder = l.placeholder;
   document.getElementById('sNewChat').textContent = l.newChat;
   const ed = document.getElementById('emptyDocs');
@@ -472,9 +487,14 @@ function renderDocs(docs) {
 }
 
 async function deleteDoc(filename) {
-  await fetch('/documents/' + encodeURIComponent(filename), { method: 'DELETE' });
-  toast(t[lang].toastRemoved(filename));
-  loadDocs();
+  try {
+    const response = await fetch('/documents/' + encodeURIComponent(filename), { method: 'DELETE' });
+    if (!response.ok) throw new Error('Delete failed (HTTP ' + response.status + ')');
+    toast(t[lang].toastRemoved(filename));
+    await loadDocs();
+  } catch (error) {
+    toast(t[lang].toastErr(error.message));
+  }
 }
 
 // ── Upload ─────────────────────────────────────────────────────────────────
@@ -485,7 +505,6 @@ async function uploadFile(file) {
       ? `"${file.name}" 已存在，替换为新版本？`
       : `"${file.name}" is already indexed. Replace it?`;
     if (!confirm(msg)) return;
-    await fetch('/documents/' + encodeURIComponent(file.name), { method: 'DELETE' });
   }
 
   const form = new FormData();
@@ -539,8 +558,15 @@ const sendBtn       = document.getElementById('sendBtn');
 let isLoading = false;
 let history = [];  // [{role: "user"|"assistant", content: "..."}]
 let currentDocs = [];
+let activeController = null;
+let chatGeneration = 0;
 
 function clearChat() {
+  chatGeneration += 1;
+  if (activeController) activeController.abort();
+  activeController = null;
+  isLoading = false;
+  sendBtn.disabled = false;
   history = [];
   messagesEl.innerHTML = `
     <div class="welcome" id="welcome">
@@ -552,7 +578,18 @@ function clearChat() {
 }
 
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function renderMarkdown(text) {
+  // Sanitize after Markdown parsing, for every partial/final/error rendering.
+  if (!window.DOMPurify || !window.marked) return escHtml(text).replace(/\n/g, '<br>');
+  return DOMPurify.sanitize(marked.parse(String(text)), {
+    USE_PROFILES: { html: true },
+    SANITIZE_NAMED_PROPS: true,
+    FORBID_TAGS: ['style', 'form', 'input', 'button', 'textarea', 'select'],
+    FORBID_ATTR: ['style']
+  });
 }
 
 function addMessage(role, content, sources = [], chunks = []) {
@@ -574,7 +611,7 @@ function addMessage(role, content, sources = [], chunks = []) {
       const list = this.nextElementSibling;
       const open = list.style.display !== 'none';
       list.style.display = open ? 'none' : 'flex';
-      this.textContent = open ? '${l.showChunks}' : '${l.hideChunks}';
+      this.textContent = open ? t[lang].showChunks : t[lang].hideChunks;
     ">${l.showChunks}</button>
     <div class="chunks-list" style="display:none">
       ${chunks.map(c => `
@@ -585,7 +622,7 @@ function addMessage(role, content, sources = [], chunks = []) {
     </div>` : '';
 
   const bubbleContent = role === 'assistant'
-    ? marked.parse(content)
+    ? renderMarkdown(content)
     : escHtml(content).replace(/\n/g, '<br>');
   const mdClass = role === 'assistant' ? ' md' : '';
 
@@ -618,14 +655,14 @@ function addStreamingBubble() {
 function updateBubble(el, text) {
   const bubble = el.querySelector('.bubble');
   bubble.classList.add('md');
-  bubble.innerHTML = marked.parse(text);
+  bubble.innerHTML = renderMarkdown(text);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
 function addCopyBtn(el, text) {
   const btn = document.createElement('button');
   btn.className = 'copy-btn';
-  btn.textContent = 'Copy';
+  btn.textContent = t[lang].copy;
   btn.onclick = async () => {
     try {
       if (navigator.clipboard) {
@@ -639,12 +676,12 @@ function addCopyBtn(el, text) {
         document.execCommand('copy');
         document.body.removeChild(ta);
       }
-      btn.textContent = '✓ Copied';
+      btn.textContent = t[lang].copied;
       btn.classList.add('ok');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 2000);
+      setTimeout(() => { btn.textContent = t[lang].copy; btn.classList.remove('ok'); }, 2000);
     } catch(e) {
-      btn.textContent = 'Failed';
-      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      btn.textContent = t[lang].copyFailed;
+      setTimeout(() => { btn.textContent = t[lang].copy; }, 2000);
     }
   };
   el.querySelector('.msg-body').appendChild(btn);
@@ -677,7 +714,7 @@ function attachMeta(el, sources, chunks) {
     btn.onclick = () => {
       const open = list.style.display !== 'none';
       list.style.display = open ? 'none' : 'flex';
-      btn.textContent = open ? l.showChunks : l.hideChunks;
+      btn.textContent = open ? t[lang].showChunks : t[lang].hideChunks;
     };
     body.appendChild(btn);
     body.appendChild(list);
@@ -687,6 +724,9 @@ function attachMeta(el, sources, chunks) {
 async function sendQuestion() {
   const q = questionInput.value.trim();
   if (!q || isLoading) return;
+  const generation = chatGeneration;
+  const controller = new AbortController();
+  activeController = controller;
   isLoading = true;
   sendBtn.disabled = true;
   questionInput.value = '';
@@ -699,8 +739,10 @@ async function sendQuestion() {
     const res = await fetch('/ask/stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: q, history })
+      body: JSON.stringify({ question: q, history: requestHistory() }),
+      signal: controller.signal
     });
+    if (generation !== chatGeneration) return;
 
     if (!res.ok) {
       const msg = await res.text().catch(() => `HTTP ${res.status}`);
@@ -711,9 +753,11 @@ async function sendQuestion() {
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
+    let completed = false;
 
     while (true) {
       const { done, value } = await reader.read();
+      if (generation !== chatGeneration) { await reader.cancel(); return; }
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
       const parts = buffer.split('\n\n');
@@ -724,21 +768,51 @@ async function sendQuestion() {
         if (evt.type === 'token') {
           updateBubble(assistantEl, (assistantEl._text = (assistantEl._text || '') + evt.content));
         } else if (evt.type === 'done') {
+          if (completed) continue;
+          completed = true;
           updateBubble(assistantEl, evt.answer);
           addCopyBtn(assistantEl, evt.answer);
           attachMeta(assistantEl, evt.sources, evt.chunks);
           history.push({ role: 'user', content: q });
           history.push({ role: 'assistant', content: evt.answer });
+          history = history.slice(-6);
+        } else if (evt.type === 'error') {
+          throw new Error(evt.message || t[lang].errServer);
         }
       }
     }
+    if (!completed) throw new Error('The response stream ended before completion');
   } catch (e) {
+    if (generation !== chatGeneration || e?.name === 'AbortError') return;
     updateBubble(assistantEl, t[lang].errServer + (e?.message ? ` (${e.message})` : ''));
   } finally {
-    isLoading = false;
-    sendBtn.disabled = false;
-    questionInput.focus();
+    if (generation === chatGeneration) {
+      activeController = null;
+      isLoading = false;
+      sendBtn.disabled = false;
+      questionInput.focus();
+    }
   }
+}
+
+function requestHistory() {
+  // Keep whole turns within the API budget; never truncate displayed answers.
+  const recent = history.slice(-6);
+  let bounded = [];
+  let omitted = false;
+  for (let i = 0; i < recent.length; i += 2) {
+    const turn = recent.slice(i, i + 2);
+    if (turn.some(message => message.content.length > 8000)) { omitted = true; continue; }
+    bounded.push(...turn);
+  }
+  while (bounded.reduce((size, message) => size + message.content.length, 0) > 24000) {
+    bounded = bounded.slice(2);
+    omitted = true;
+  }
+  if (omitted) toast(lang === 'zh'
+    ? '部分较长对话未加入本次上下文；需要时请在问题中重述关键信息。'
+    : 'Some longer turns were omitted from follow-up context. Restate key details if needed.', 6500);
+  return bounded;
 }
 
 sendBtn.addEventListener('click', sendQuestion);

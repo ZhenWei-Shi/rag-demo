@@ -5,13 +5,14 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 logger = logging.getLogger(__name__)
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from fastapi.concurrency import run_in_threadpool
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 import io
 import json
 import PyPDF2
@@ -100,8 +101,7 @@ def _ocr_pdf(content: bytes) -> str:
     return _tesseract_ocr_pdf(content)
 
 
-from rag.chunker import chunk_text
-from rag.embedder import embed, warmup
+from rag.embedder import embed, warmup, chunk_document
 from rag.store import add_document, delete_document, query, list_documents
 from rag.generator import generate_answer, stream_answer
 
@@ -117,17 +117,55 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="RAG Document Q&A", lifespan=lifespan)
 
 
+class HistoryMessage(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=8000)
+
+
 class Question(BaseModel):
     question: str
-    history: list[dict] = []
+    history: list[HistoryMessage] = Field(default_factory=list, max_length=6)
+
+    @field_validator("history")
+    @classmethod
+    def history_budget(cls, messages):
+        if sum(len(message.content) for message in messages) > 24000:
+            raise ValueError("History exceeds the 24000 character budget")
+        return messages
+
+
+def _extract_text(content: bytes, ext: str) -> str:
+    try:
+        if ext == ".pdf":
+            reader = PyPDF2.PdfReader(io.BytesIO(content))
+            return "\n".join(page.extract_text() or "" for page in reader.pages)
+        if ext == ".docx":
+            from docx import Document
+            from docx.table import Table
+            from docx.text.paragraph import Paragraph
+            doc = Document(io.BytesIO(content))
+            parts = []
+            for element in doc.element.body.iterchildren():
+                if element.tag.endswith("}p"):
+                    parts.append(Paragraph(element, doc).text)
+                elif element.tag.endswith("}tbl"):
+                    parts.extend(" | ".join(cell.text for cell in row.cells)
+                                 for row in Table(element, doc).rows)
+            return "\n".join(parts)
+        return content.decode("utf-8-sig")
+    except Exception as exc:
+        raise ValueError("Invalid or unreadable document") from exc
 
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     # EN: Upload and index a document. Supports PDF, DOCX, TXT, MD.
     # ZH: 上传并索引文档，支持 PDF、DOCX、TXT、MD 格式。
-    content = await file.read()
-    filename = file.filename
+    content = await file.read(MAX_FILE_SIZE + 1)
+    filename = file.filename or ""
+    if not filename or any(char in filename for char in ("/", "\\", "\x00")):
+        raise HTTPException(status_code=400, detail="A plain document filename is required")
 
     # EN: Reject files exceeding the size limit before any processing.
     # ZH: 在任何处理之前拒绝超过大小限制的文件。
@@ -141,28 +179,23 @@ async def upload(file: UploadFile = File(...)):
             detail=f"Unsupported file type '{ext}'. Allowed: PDF, DOCX, TXT, MD."
         )
 
-    if filename.endswith(".pdf"):
-        reader = PyPDF2.PdfReader(io.BytesIO(content))
-        text = "\n".join(page.extract_text() or "" for page in reader.pages)
-        # EN: If text extraction yields nothing, the PDF is likely scanned — fall back to OCR.
-        # ZH: 如果文本提取为空，说明是扫描件，降级为 OCR 处理。
-        if not text.strip():
+    try:
+        text = await run_in_threadpool(_extract_text, content, ext)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid or unreadable document")
+    if ext == ".pdf" and not text.strip():
+        try:
             text = await run_in_threadpool(_ocr_pdf, content)
-    elif filename.endswith(".docx"):
-        from docx import Document
-        doc = Document(io.BytesIO(content))
-        text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
-    elif filename.endswith((".txt", ".md")):
-        text = content.decode("utf-8", errors="ignore")
-    else:
-        raise HTTPException(status_code=400, detail="Only PDF, DOCX, TXT and MD files are supported")
+        except Exception:
+            logger.exception("OCR failed")
+            raise HTTPException(status_code=503, detail="OCR is temporarily unavailable")
 
     if not text.strip():
         raise HTTPException(status_code=400, detail="Could not extract text from file")
 
-    chunks = chunk_text(text)
+    chunks = await run_in_threadpool(chunk_document, text)
     embeddings = await run_in_threadpool(embed, chunks)
-    add_document(chunks, embeddings, filename)
+    await run_in_threadpool(add_document, chunks, embeddings, filename)
 
     return {"filename": filename, "chunks": len(chunks)}
 
@@ -171,7 +204,7 @@ async def upload(file: UploadFile = File(...)):
 async def delete(filename: str):
     # EN: Remove a document and all its chunks from the vector store.
     # ZH: 从向量数据库中删除文档及其所有分块。
-    delete_document(filename)
+    await run_in_threadpool(delete_document, filename)
     return {"deleted": filename}
 
 
@@ -179,7 +212,7 @@ async def delete(filename: str):
 async def documents():
     # EN: Return the list of currently indexed document filenames.
     # ZH: 返回当前已索引的文档文件名列表。
-    return {"documents": list_documents()}
+    return {"documents": await run_in_threadpool(list_documents)}
 
 
 @app.post("/ask")
@@ -192,7 +225,7 @@ async def ask(body: Question):
         raise HTTPException(status_code=400, detail=f"Question too long (max {MAX_QUESTION_LENGTH} chars)")
 
     q_embedding = (await run_in_threadpool(embed, [body.question]))[0]
-    chunks = query(q_embedding)
+    chunks = await run_in_threadpool(query, q_embedding, question=body.question)
 
     if not chunks:
         return {
@@ -201,7 +234,8 @@ async def ask(body: Question):
             "chunks": []
         }
 
-    answer = generate_answer(body.question, chunks, body.history)
+    answer = await run_in_threadpool(generate_answer, body.question, chunks,
+                                    [message.model_dump() for message in body.history])
     sources = list(dict.fromkeys(c["source"] for c in chunks))
 
     return {"answer": answer, "sources": sources, "chunks": chunks}
@@ -218,7 +252,7 @@ async def ask_stream(body: Question):
         raise HTTPException(status_code=400, detail=f"Question too long (max {MAX_QUESTION_LENGTH} chars)")
 
     q_embedding = (await run_in_threadpool(embed, [body.question]))[0]
-    chunks = query(q_embedding)
+    chunks = await run_in_threadpool(query, q_embedding, question=body.question)
 
     if not chunks:
         msg = "No documents have been uploaded yet. Please upload a PDF or text file first."
@@ -227,15 +261,20 @@ async def ask_stream(body: Question):
             yield f"data: {json.dumps({'type': 'done', 'sources': [], 'chunks': [], 'answer': msg})}\n\n"
         return StreamingResponse(_empty(), media_type="text/event-stream")
 
-    question, history, captured = body.question, body.history, chunks
+    question, history, captured = body.question, [message.model_dump() for message in body.history], chunks
 
     def _generate():
         # EN: Accumulate the full answer while streaming tokens to the client.
         # ZH: 在向客户端流式推送 token 的同时，累积完整答案以便最终发送 done 事件。
         full = ""
-        for token in stream_answer(question, captured, history):
-            full += token
-            yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        try:
+            for token in stream_answer(question, captured, history):
+                full += token
+                yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        except Exception:
+            logger.exception("Answer stream failed")
+            yield f"data: {json.dumps({'type': 'error', 'message': 'Answer generation failed. Please retry.'})}\n\n"
+            return
         sources = list(dict.fromkeys(c["source"] for c in captured))
         yield f"data: {json.dumps({'type': 'done', 'sources': sources, 'chunks': captured, 'answer': full})}\n\n"
 
