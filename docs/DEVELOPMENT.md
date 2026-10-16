@@ -47,6 +47,12 @@ No production corpus or cloud LLM key is needed for these commands. The retrieva
 evaluation runs in a child process so Chroma file handles close before temporary
 data cleanup on Windows.
 
+After the model has been downloaded, set `HF_HUB_OFFLINE=1` and
+`TRANSFORMERS_OFFLINE=1` **before starting Python** to validate using its cache.
+For constrained test hosts, also limit `OMP_NUM_THREADS`, `MKL_NUM_THREADS` and
+`OPENBLAS_NUM_THREADS` (for example, to `2`). These settings affect this validation
+process; do not silently change production service settings.
+
 Before deployment, also syntax-check the inline frontend script with Node and
 exercise both ordinary and streaming rendering in a browser. Test dependency
 absence, dangerous Markdown/HTML, ordinary Markdown, filenames, failed replacement,
@@ -54,9 +60,11 @@ stream errors, clearing an active response, language switching, and long history
 
 ## Results and limits of this update
 
-- 65 regression tests passed on Python 3.12. Existing PyPDF2 and Starlette/httpx
-  deprecation warnings remain. Compilation, frontend syntax and whitespace checks
-  passed. The deployed runtime uses Python 3.10 and one Uvicorn worker.
+- The same 65 regression tests passed locally on Python 3.12 and in an isolated
+  test library on the deployed Python 3.10 server. Local warnings concern PyPDF2
+  and Starlette/httpx; the server additionally reports an OpenTelemetry dependency
+  deprecation. Compilation, frontend syntax and whitespace checks passed. The
+  deployed runtime uses one Uvicorn worker.
 - The checked-in retrieval evaluation contains **18 synthetic documents and 12
   disclosed development queries**. Target passage recall at six was 11/12 for
   dense search and 12/12 for BM25L + reciprocal rank fusion + MMR. This includes the
