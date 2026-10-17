@@ -1,0 +1,36 @@
+name: RAG container
+on:
+  push:
+    branches: ['codex/**', master]
+    paths: ['Dockerfile', '.dockerignore', 'requirements.txt', 'app.py', 'rag/**', 'static/**', 'tests/container_smoke.py', '.github/workflows/container.yml']
+  pull_request:
+    paths: ['Dockerfile', '.dockerignore', 'requirements.txt', 'app.py', 'rag/**', 'static/**', 'tests/container_smoke.py', '.github/workflows/container.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rag-container-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build CPU image (no registry push)
+        run: docker build --tag rag-demo:ci .
+      - name: Start isolated container without network or credentials
+        run: |
+          docker run --detach --name rag-container --network none \
+            --env HF_HUB_OFFLINE=1 --env TRANSFORMERS_OFFLINE=1 \
+            --env OMP_NUM_THREADS=2 --env MKL_NUM_THREADS=2 --env OPENBLAS_NUM_THREADS=2 \
+            --env ANONYMIZED_TELEMETRY=False --env RAG_DATA_DIR=/tmp/rag-container-data \
+            rag-demo:ci
+      - name: Offline startup, image-only PDF OCR, embedding retrieval and CRUD
+        run: docker exec -i rag-container python - < tests/container_smoke.py
+      - name: Runtime logs
+        if: always()
+        run: docker logs rag-container 2>&1 || true
+      - name: Remove isolated container and volume
+        if: always()
+        run: docker rm --force --volumes rag-container || true
