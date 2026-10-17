@@ -25,3 +25,11 @@ def embed(texts: list[str]) -> list[list[float]]:
     # EN: Encode a list of strings into dense vector embeddings.
     # ZH: 将字符串列表编码为稠密向量嵌入。
     return _get_model().encode(texts, batch_size=64).tolist()
+
+
+def chunk_document(text: str) -> list[str]:
+    """Include special tokens when budgeting for the actual embedding model."""
+    from rag.chunker import chunk_text
+    model = _get_model()
+    count = lambda value: len(model.tokenizer.encode(value, add_special_tokens=True, truncation=False))
+    return chunk_text(text, token_count=count, max_tokens=model.max_seq_length)

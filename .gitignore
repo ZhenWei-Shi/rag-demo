@@ -13,6 +13,7 @@ env/
 
 # ChromaDB persistent data
 chroma_data/
+public_demo_data/
 
 # Uploaded files
 uploads/
@@ -29,3 +30,6 @@ uploads/
 # OS
 .DS_Store
 Thumbs.db
+
+# Test cache
+.pytest_cache/
