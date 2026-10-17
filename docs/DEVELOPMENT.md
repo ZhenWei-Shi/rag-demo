@@ -167,3 +167,14 @@ browser profile; its QA selections are not actual human approvals. The combined
 working tree passed 117 Python / 11 Node tests locally. This is local evidence,
 not a CI result. Source and tests are committed; generated pages, downloads and
 browser screenshots remain local ignored evidence.
+
+## CI scope
+
+The separate `codex/rag-ci` branch adds GitHub Actions regression jobs on pushes
+and PRs. Official Actions were checked via the GitHub API and pinned to commits;
+Python 3.12 uses CPU PyTorch and preloads the public embedding model before tests,
+Node 24 runs replay contracts without lifecycle scripts. The jobs have read-only
+repository permissions and do not run cloud/Ollama generation or deploy anything.
+A green regression job does not clear the documented npm dependency audit warnings,
+prove answer accuracy or constitute independent human approval. Report the actual
+Actions outcome separately from the existing local 117/11 result.
