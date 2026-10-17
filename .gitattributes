@@ -1,0 +1,3 @@
+# Evaluation fingerprints bind exact bytes across Windows/Linux and GitHub downloads.
+evaluation/*.json -text
+evaluation/**/*.json -text

@@ -22,3 +22,4 @@ For a resume, accurately describe establishing a reproducible bilingual RAG benc
 tracking retrieval versus answer quality, and identifying errors through human review.
 No improvement claim is supported yet. Later comparisons must preserve model/dataset
 conditions, show regressions as well as gains, and label model grading separately.
+`nPublication correction: the first v1 Git tag normalized Windows newlines and therefore did not preserve the manifest byte hashes. Use tag rag-baseline-2026-10-16-v2, which preserves exact JSON bytes via .gitattributes. The v1 tag is retained for an honest audit trail; answers and verdicts did not change.
