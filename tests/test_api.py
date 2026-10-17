@@ -15,6 +15,9 @@ from fastapi.testclient import TestClient
 SOURCE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SOURCE))
 import app as app_module
+import api.documents as document_routes
+import api.questions as question_routes
+import rag.ocr as ocr
 import rag.store as store
 from rag.generator import _build_messages
 
@@ -26,10 +29,11 @@ def client(monkeypatch):
     col = chromadb.EphemeralClient().create_collection("audit_" + uuid.uuid4().hex)
     monkeypatch.setattr(store, "_collection", col)
     monkeypatch.setattr(app_module, "warmup", lambda: None)
-    monkeypatch.setattr(app_module, "embed", lambda texts: [EMBED for _ in texts])
-    monkeypatch.setattr(app_module, "chunk_document", lambda text: [text])
-    monkeypatch.setattr(app_module, "generate_answer", lambda *args: "fixture answer")
-    monkeypatch.setattr(app_module, "stream_answer", lambda *args: iter(["fixture ", "answer"]))
+    monkeypatch.setattr(document_routes, "embed", lambda texts: [EMBED for _ in texts])
+    monkeypatch.setattr(question_routes, "embed", lambda texts: [EMBED for _ in texts])
+    monkeypatch.setattr(document_routes, "chunk_document", lambda text: [text])
+    monkeypatch.setattr(question_routes, "generate_answer", lambda *args: "fixture answer")
+    monkeypatch.setattr(question_routes, "stream_answer", lambda *args: iter(["fixture ", "answer"]))
     with TestClient(app_module.app, raise_server_exceptions=False) as test_client:
         yield test_client
 
@@ -109,7 +113,7 @@ def test_sse_failure_emits_error_event(client, monkeypatch):
     def broken_stream(*args):
         yield "partial answer"
         raise RuntimeError("simulated model disconnect")
-    monkeypatch.setattr(app_module, "stream_answer", broken_stream)
+    monkeypatch.setattr(question_routes, "stream_answer", broken_stream)
     result = client.post("/ask/stream", json={"question": "hi"})
     assert '"type": "error"' in result.text, repr(result.text)
 
@@ -119,7 +123,7 @@ def test_blocking_answer_does_not_stall_event_loop(client, monkeypatch):
     def slow_answer(*args):
         time.sleep(0.4)
         return "answer"
-    monkeypatch.setattr(app_module, "generate_answer", slow_answer)
+    monkeypatch.setattr(question_routes, "generate_answer", slow_answer)
     async def measure():
         transport = httpx.ASGITransport(app=app_module.app)
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as http:
@@ -181,16 +185,57 @@ def test_normal_uppercase_pdf_extracts_text(client):
 
 
 def test_scan_ocr_path_keeps_api_contract(client, monkeypatch):
-    monkeypatch.setattr(app_module, '_ocr_pdf', lambda content: 'Synthetic OCR result')
+    monkeypatch.setattr(document_routes, 'extract_pdf_text', lambda content: 'Synthetic OCR result')
     result = client.post('/upload', files={'file': ('scan.pdf', sample_pdf())})
     assert result.status_code == 200
     assert store.query(EMBED)[0]['text'] == 'Synthetic OCR result'
 
 
 def test_aliyun_ocr_failure_uses_local_fallback(monkeypatch):
-    monkeypatch.setattr(app_module, '_aliyun_ocr_available', lambda: True)
+    monkeypatch.setattr(ocr, '_aliyun_ocr_available', lambda: True)
     def unavailable(content):
         raise RuntimeError('synthetic OCR service error')
-    monkeypatch.setattr(app_module, '_aliyun_ocr_pdf', unavailable)
-    monkeypatch.setattr(app_module, '_tesseract_ocr_pdf', lambda content: 'fallback text')
-    assert app_module._ocr_pdf(b'synthetic input') == 'fallback text'
+    monkeypatch.setattr(ocr, '_aliyun_ocr_pdf', unavailable)
+    monkeypatch.setattr(ocr, '_tesseract_ocr_pdf', lambda content: 'fallback text')
+    assert ocr.extract_pdf_text(b'synthetic input') == 'fallback text'
+
+
+def test_router_assembly_preserves_public_paths(client):
+    assert {path: set(operations) for path, operations in app_module.app.openapi()["paths"].items()} == {
+        "/upload": {"post"}, "/documents": {"get"}, "/documents/{filename}": {"delete"},
+        "/ask": {"post"}, "/ask/stream": {"post"},
+    }
+
+
+def test_static_entry_loads_styles_and_module_imports(client):
+    import re
+    from html.parser import HTMLParser
+    from urllib.parse import urljoin
+
+    class Assets(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.urls = []
+
+        def handle_starttag(self, tag, attrs):
+            attrs = dict(attrs)
+            url = attrs.get("src") if tag == "script" else attrs.get("href") if tag == "link" else None
+            if url and url.startswith("/"):
+                self.urls.append(url)
+
+    page = client.get("/")
+    assert page.status_code == 200
+    assets = Assets()
+    assets.feed(page.text)
+    pending, seen = list(assets.urls), set()
+    assert "/styles.css" in pending and "/js/main.js" in pending
+    while pending:
+        url = pending.pop()
+        if url in seen:
+            continue
+        seen.add(url)
+        response = client.get(url)
+        assert response.status_code == 200, url
+        if url.endswith(".js"):
+            assert "javascript" in response.headers["content-type"], url
+            pending.extend(urljoin(url, ref) for ref in re.findall(r"from ['\"](\.[^'\"]+)['\"]", response.text))

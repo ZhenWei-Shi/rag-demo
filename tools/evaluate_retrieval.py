@@ -1,6 +1,6 @@
 """Synthetic retrieval check, real embeddings, isolated DB; no LLM/API keys.
 
-Run from repository root: python tests/evaluate_retrieval.py
+Run from repository root: python -m tools.evaluate_retrieval
 These disclosed development cases are NOT a held-out accuracy benchmark.
 """
 import json
