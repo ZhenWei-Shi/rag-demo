@@ -47,6 +47,7 @@ jobs:
         run: npm run test:eval-adapter
       - name: Compile and syntax checks
         run: |
-          python -m compileall -q rag evaluation tests app.py
+          python -m compileall -q api rag evaluation tools tests app.py
           node --check evaluation/render.cjs
           node --check evaluation/framework-check.cjs
+          for file in static/js/*.js; do node --check "$file"; done

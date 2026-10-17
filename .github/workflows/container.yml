@@ -2,9 +2,9 @@ name: RAG container
 on:
   push:
     branches: ['codex/**', master]
-    paths: ['Dockerfile', '.dockerignore', 'requirements.txt', 'app.py', 'rag/**', 'static/**', 'tests/container_smoke.py', '.github/workflows/container.yml']
+    paths: ['Dockerfile', '.dockerignore', 'requirements.txt', 'app.py', 'api/**', 'rag/**', 'static/**', 'tests/container_smoke.py', '.github/workflows/container.yml']
   pull_request:
-    paths: ['Dockerfile', '.dockerignore', 'requirements.txt', 'app.py', 'rag/**', 'static/**', 'tests/container_smoke.py', '.github/workflows/container.yml']
+    paths: ['Dockerfile', '.dockerignore', 'requirements.txt', 'app.py', 'api/**', 'rag/**', 'static/**', 'tests/container_smoke.py', '.github/workflows/container.yml']
   workflow_dispatch:
 permissions:
   contents: read

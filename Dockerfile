@@ -34,6 +34,7 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 # EN: Copy application source code.
 # ZH: 复制应用源代码。
 COPY app.py ./
+COPY api ./api
 COPY rag ./rag
 COPY static ./static
 

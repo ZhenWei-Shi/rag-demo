@@ -39,6 +39,19 @@ def main():
                 raise
             time.sleep(1)
 
+    # Exercise the actual packaged frontend, including every module dependency.
+    with urllib.request.urlopen("http://127.0.0.1:8000/", timeout=10) as response:
+        page = response.read().decode()
+    assert 'src="/js/main.js"' in page and 'href="/styles.css"' in page
+    assets = [Path("static/styles.css"), *sorted(Path("static/js").glob("*.js"))]
+    assert len(assets) == 5, "Expected CSS and all four browser modules"
+    for asset in assets:
+        url = "http://127.0.0.1:8000/" + asset.relative_to("static").as_posix()
+        with urllib.request.urlopen(url, timeout=10) as response:
+            assert response.read() == asset.read_bytes(), str(asset)
+            if asset.suffix == ".js":
+                assert "javascript" in response.headers.get("Content-Type", ""), str(asset)
+
     from PIL import Image, ImageDraw, ImageFont
     import PyPDF2
     image = Image.new("RGB", (1600, 500), "white")

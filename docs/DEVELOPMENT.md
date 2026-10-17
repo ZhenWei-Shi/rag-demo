@@ -108,7 +108,7 @@ Use a virtual environment and install `requirements.txt`, then `pytest` and
 
 ```bash
 python -m pytest -q --tb=short tests
-python tests/evaluate_retrieval.py
+python -m tools.evaluate_retrieval
 python -m compileall -q app.py rag tests
 git diff --check
 ```
@@ -169,7 +169,7 @@ stream errors, clearing an active response, language switching, and long history
 Run one worker per data directory. Back up the entire directory, including
 `versions.sqlite3`, before changing indexes. For tokenizer-based reindexing,
 prefer original source documents when available. The recovery helper
-`python -m tests.reindex_existing` rebuilds from stored chunks; it cannot recover
+`python -m tools.reindex_existing` rebuilds from stored chunks; it cannot recover
 text already lost before storage, and overlapping legacy chunks may duplicate text.
 Stop the app and use the intended `RAG_DATA_DIR` when running maintenance.
 
@@ -264,3 +264,58 @@ and comparability limits are preserved with a file manifest on a separate
 codex/rag-human-results branch. Explicit review revisions also scope browser cache
 keys, so regenerating a page from updated human labels cannot reload an older
 cache. This does not silently replace unsaved edits from the same review revision.
+
+
+## Responsibility cleanup (2026-10-17)
+
+This independent branch starts from merged master `aae3135`; it does not merge or
+deploy the pending container PR #7. Codex inventoried tracked files and references,
+removed only the unreferenced early `rag_demo.py` implementation and unreachable
+assistant-render branch, split HTTP schemas/routes from parsing/OCR, and separated
+HTML/CSS/frontend ES modules. Supported offline maintenance commands now live in
+`tools/`. See the current README tree for module ownership and command paths.
+
+Claude CLI reviewed the proposed backend split and identified useful checks for
+both imported embedding patch targets, lazy optional imports, router-before-static
+mount order, 400/422/SSE contracts and future container copies. Codex implemented
+the changes and adapted test patch targets to the true consuming modules. Claude
+did not write the final source; Gemini and Tev1 were not invoked. No independent
+human approval is claimed.
+
+The initial 119 Python regressions passed after extraction. Two integration
+contracts were added for the exact OpenAPI path/method set and the recursive
+serving/MIME types of actual ES-module imports and CSS. The final suite and CI
+results are recorded in the cleanup PR, separately from these earlier checks.
+The browser fixture uses real routes/assets and in-memory Chroma with stubbed
+embeddings/generation: it verifies language switching, streamed rendering,
+sanitization, chunk toggles, deletion/reset, stream failure and an 8,001-character
+answer followed by a usable follow-up with an omission notice. It is UI regression
+validation, not a new model accuracy test. A stylesheet DOM accessor was unavailable
+through the browser observation API; the styled screenshot and served-asset test
+provide the actual layout/loading evidence instead.
+
+Keep `rag/generator.py`, frozen JSON evidence and the data formats unchanged.
+Legacy index reading/recovery code remains in use. Existing development advisories,
+optional GCP peer inconsistency, inactive cloud key and network-path investigation
+are not part of this refactor. Runtime configuration/private archives are untouched.
+
+Container integration note: current master's `COPY . .` includes `api/`. Pending
+PR #7 uses an explicit runtime whitelist and must also copy `api/` when combined
+with this cleanup, then repeat its real container smoke test. Do not infer that
+the old pre-cleanup green container check validates the combined tree. The cleanup
+does not claim a local Docker build or production deployment.
+
+
+## Container and cleanup integration (2026-10-17)
+
+PR #7 now incorporates the reviewed cleanup branch from PR #9 in its feature
+branch. The runtime image explicitly copies `api/`, and container workflow path
+filters include `api/**` so API-only edits trigger the build. The isolated smoke
+also fetches the real HTML, CSS and all browser modules, checks their bytes and
+JavaScript MIME types, then runs the existing real image-only PDF/OCR, embeddings,
+retrieval and CRUD checks. CI results for this combined head supersede the earlier
+pre-cleanup Docker result; no new accuracy claim or cloud LLM call is involved.
+Codex integrated and self-reviewed this follow-up; no new independent approval is
+claimed. Merge/deployment require explicit owner confirmation. A future source-only
+production release must include `api/**/*.py` as well as app/rag/static, with
+manifest verification, private backups and isolated server tests before restart.

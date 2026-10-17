@@ -112,20 +112,60 @@ Writing the RAG pipeline from scratch (chunker → embedder → vector store →
 
 ## Project Structure
 
-```
+```text
 rag-demo/
-├── app.py              # FastAPI server — upload, ask, document management
-├── rag/
-│   ├── chunker.py      # Sentence-boundary-aware text chunking
-│   ├── embedder.py     # Embedding model singleton (lazy-loaded, warm on startup)
-│   ├── store.py        # ChromaDB persistent vector store
-│   └── generator.py    # LLM wrapper (DeepSeek / Ollama, switchable via env)
-├── static/
-│   └── index.html      # Single-page UI (bilingual EN/ZH)
-└── requirements.txt
+├── app.py                  # ASGI assembly and model warmup; uvicorn app:app
+├── api/                    # HTTP boundary
+│   ├── schemas.py          # Shared question/history validation
+│   ├── documents.py        # Upload, list and delete endpoints
+│   └── questions.py        # Ordinary and streaming Q&A endpoints
+├── rag/                    # Pipeline and external service adapters
+│   ├── documents.py        # PDF/DOCX/TXT/MD text extraction
+│   ├── ocr.py              # Optional cloud OCR and local Tesseract
+│   ├── chunker.py          # Token-budget-aware chunk boundaries
+│   ├── embedder.py         # Shared embedding model/tokenizer
+│   ├── store.py            # Document lifecycle and hybrid query
+│   ├── versioned_store.py  # Durable visibility/revision pointers
+│   ├── hybrid.py           # BM25L, RRF and MMR selection
+│   └── generator.py        # LLM messages and provider calls
+├── static/                 # Browser assets; no build step
+│   ├── index.html          # Markup only
+│   ├── styles.css          # Layout and responsive styles
+│   ├── js/                 # ES modules with private feature state
+│   │   ├── main.js         # Initialization only
+│   │   ├── ui.js           # Language, shared presentation, sanitization
+│   │   ├── documents.js    # Document listing/upload/deletion
+│   │   └── chat.js         # Conversation, SSE and history budget
+│   └── vendor/             # DOMPurify and its license
+├── tools/                  # Explicit offline maintenance/development commands
+├── tests/                  # Automated regression contracts
+├── evaluation/             # Independent runner and offline review tooling
+│   ├── baselines/          # Immutable original answers and review evidence
+│   ├── experiments/        # Published candidates, regressions and owner review
+│   └── results/            # Ignored local outputs; not production assets
+└── docs/                   # Development notes and fictional public samples
 ```
 
 ---
+
+## Code organization (2026-10-17)
+
+The runtime is separated by responsibility: HTTP boundary → document/OCR adapters
+and the existing retrieval/generation pipeline. The frontend uses native ES
+modules, so its functions/state are not exposed as global inline handlers.
+`app:app`, the HTTP request/response formats, error statuses, SSE events and model
+prompt are unchanged. Run the UI through the HTTP server, not `file://`.
+
+Removed `rag_demo.py`, an unreferenced early in-memory prototype with its own
+chunker/generator, and the unused non-streaming assistant-render branch. This does
+not remove the supported `/ask` endpoint. Maintenance scripts moved from `tests/`
+to `tools/`: use `python -m tools.evaluate_retrieval` and, after a full data backup,
+`python -m tools.reindex_existing`. Reindexing remains an explicit offline action.
+
+Published baselines, failed candidates, owner-review evidence, licenses and legacy
+index compatibility remain intentional. An inactive cloud OCR configuration is
+not grounds to delete the optional adapter. No dependencies were upgraded or
+removed, and the frozen answer-quality experiment was not rerun or edited.
 
 ## Quick Start
 
