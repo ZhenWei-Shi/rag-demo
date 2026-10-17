@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "dataset_version": "transfer-preregistered-v1",
+  "scope": "Fictional transfer suite preregistered before answer-quality changes. Same author, small disclosed set; not independently blinded or representative production evaluation.",
+  "documents": {
+    "harbor.md": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+    "workshop.md": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+    "delivery-old.md": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+    "delivery-new.md": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+    "equipment.md": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated."
+  },
+  "cases": [
+    {
+      "id": "transfer-open",
+      "question": "Amber Harbor在开放日几点开门？",
+      "reference_answer": "10:15。",
+      "category": "time",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "harbor.md",
+          "quote": "doors open at 10:15",
+          "patterns": [
+            "10:15"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-last-entry",
+      "question": "What is Amber Harbor last entry, rather than closing time?",
+      "reference_answer": "18:05.",
+      "category": "time",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "harbor.md",
+          "quote": "Last entry is 18:05.",
+          "patterns": [
+            "18:05"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-two-fees",
+      "question": "What are Amber Harbor youth admission and the workshop annual membership fee?",
+      "reference_answer": "6 tokens and 32 credits respectively.",
+      "category": "multi_document",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "harbor.md",
+          "quote": "Youth admission costs 6 tokens.",
+          "patterns": [
+            "(?<!\\d)6(?!\\d)"
+          ]
+        },
+        {
+          "source": "workshop.md",
+          "quote": "年度会费32积分。",
+          "patterns": [
+            "(?<!\\d)32(?!\\d)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-two-notices",
+      "question": "分别说出青石工作坊预约需提前几天，退款需提前几小时。",
+      "reference_answer": "预约5天，退款36小时。",
+      "category": "multi_fact",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "workshop.md",
+          "quote": "预约提前5天",
+          "patterns": [
+            "(?<!\\d)5(?!\\d)|五天"
+          ]
+        },
+        {
+          "source": "workshop.md",
+          "quote": "退款至少提前36小时通知。",
+          "patterns": [
+            "(?<!\\d)36(?!\\d)|三十六"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-new-price",
+      "question": "What is the Pine delivery fee on February 10, 2026 for a 30-token order?",
+      "reference_answer": "11 tokens.",
+      "category": "version",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "delivery-new.md",
+          "quote": "delivery costs 11 tokens per order",
+          "patterns": [
+            "(?<!\\d)11(?!\\d)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-old-price",
+      "question": "按2026年1月2日通知，Pine每单配送费是多少？",
+      "reference_answer": "7积分。",
+      "category": "version",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "delivery-old.md",
+          "quote": "delivery costs 7 tokens per order.",
+          "patterns": [
+            "(?<!\\d)7(?!\\d)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-boundary",
+      "question": "Does exactly 75 tokens qualify for free Pine delivery under the February notice?",
+      "reference_answer": "Yes, at least 75 qualifies.",
+      "category": "boundary",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "delivery-new.md",
+          "quote": "Orders totaling at least 75 tokens receive free delivery.",
+          "patterns": [
+            "\\byes\\b|免费|免运费"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-code",
+      "question": "What is the Beacon emergency release code?",
+      "reference_answer": "MAPLE-904.",
+      "category": "identifier",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "equipment.md",
+          "quote": "Emergency release code is MAPLE-904.",
+          "patterns": [
+            "MAPLE[- ]904"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-closed",
+      "question": "Amber Harbor哪天闭馆？",
+      "reference_answer": "周三。",
+      "category": "negation",
+      "unanswerable": false,
+      "facts": [
+        {
+          "source": "harbor.md",
+          "quote": "Closed on Wednesdays.",
+          "patterns": [
+            "周三|星期三|Wednesday"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "transfer-unknown-phone",
+      "question": "青石工作坊客服电话是什么？",
+      "reference_answer": "资料未提供客服电话。",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [],
+      "refusal_patterns": [
+        "not (?:provided|stated|specified|mentioned|available)",
+        "(?:couldn.t|cannot|can.t|unable to) find",
+        "未提供|未说明|未提及|没有提供|没有说明|没有找到|未找到|找不到"
+      ]
+    },
+    {
+      "id": "transfer-unknown-director",
+      "question": "Who is the director of Amber Harbor?",
+      "reference_answer": "The provided documents do not name the director.",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [],
+      "refusal_patterns": [
+        "not (?:provided|stated|specified|mentioned|available)",
+        "(?:couldn.t|cannot|can.t|unable to) find",
+        "未提供|未说明|未提及|没有提供|没有说明|没有找到|未找到|找不到",
+        "do not (?:name|mention)"
+      ]
+    },
+    {
+      "id": "transfer-unknown-price",
+      "question": "What is the purchase price of QV-42?",
+      "reference_answer": "The purchase price is not stated.",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [],
+      "refusal_patterns": [
+        "not (?:provided|stated|specified|mentioned|available)",
+        "(?:couldn.t|cannot|can.t|unable to) find",
+        "未提供|未说明|未提及|没有提供|没有说明|没有找到|未找到|找不到"
+      ]
+    }
+  ]
+}

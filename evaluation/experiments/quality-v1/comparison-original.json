@@ -1,0 +1,269 @@
+{
+  "dataset_sha256": "b5d3b3c2b1d07b8102c972bf39a1d4cf00080058e7b9692fc2eeca48b61facc0",
+  "before_run": "3c1cca5f10c4484b8cf74a3b58f61c5f",
+  "after_run": "d79be463bb3541a7b14f4fe7b567e140",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "generation": {
+    "temperature": 0,
+    "seed": 101,
+    "num_predict": 512
+  },
+  "before_rule_passed": 32,
+  "after_rule_passed": 33,
+  "cases": 34,
+  "rule_gains": [
+    "shipping-april",
+    "cross-booking"
+  ],
+  "rule_regressions": [
+    "museum-refund"
+  ],
+  "retrieval_unchanged_for_all": false,
+  "context_matched_cases": 33,
+  "context_matched_before_passed": 31,
+  "context_matched_after_passed": 32,
+  "before_human_accuracy": 0.8235294117647058,
+  "after_human_accuracy": null,
+  "human_accuracy_delta": null,
+  "rows": [
+    {
+      "id": "museum-adult",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-student",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-child",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-closed",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": false,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-water",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-opening",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-last-entry",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "museum-refund",
+      "before_rule": true,
+      "after_rule": false,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "lab-booking",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": false,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "lab-capacity",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "lab-open",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": false,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "lab-identifier",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "rail-cap",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "hotel-cap",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "no-receipt",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "shipping-april",
+      "before_rule": false,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "shipping-march",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "shipping-threshold",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "library-loan",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "library-renewal",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "library-overdue",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "part-b",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "part-c",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "cross-booking",
+      "before_rule": false,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "cross-fees",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "unknown-director",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "unknown-lab-year",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "unknown-phone",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "unknown-price",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "unknown-weekend",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "unknown-ceo",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "followup-booking",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "followup-student",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": false,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "tail-distractors",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": false
+    }
+  ],
+  "limitation": "Rules are proxies; newly generated answers require fresh human review. Disclosed synthetic development cases do not establish general accuracy."
+}

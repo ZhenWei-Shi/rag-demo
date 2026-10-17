@@ -24,9 +24,12 @@ def _build_messages(question: str, context_chunks: list[dict], history: list[dic
         f"[Source: {c['source']}]\n{c['text']}" for c in context_chunks
     )
     system = (
-        "You are a helpful assistant that answers questions based on the provided documents. "
-        "Respond in the same language as the user's question. "
-        "If the answer is not found in the documents, say so clearly.\n\n"
+        "Answer from the documents, in the question's language. Be concise. "
+        "Answer every part of the question, using a separate bullet for each part. "
+        "Preserve numbers, units, dates and conditions exactly. Do not add unasked facts. "
+        "Check all excerpts before saying information is missing. "
+        "If unavailable, say 'This information is not provided in the documents.' "
+        "or '提供的资料未提供此信息。' Do not deny a fact you then give.\n\n"
         f"Documents:\n{context}"
     )
     messages = [{"role": "system", "content": system}]
