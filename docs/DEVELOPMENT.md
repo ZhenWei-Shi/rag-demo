@@ -156,3 +156,14 @@ limits are in evaluation/experiments/quality-v1. No human improvement, CI succes
 merge or production deployment is claimed for these candidates. Claude CLI model
 reading identified issues but did not fill human labels; its missing-context theory
 for the refund error was rejected after checking the returned exact evidence.
+
+## Offline human-review interface
+
+A separate `codex/rag-review-page` branch follows the answer-quality experiment
+branch. Codex implemented an offline Chinese card view and response-bound export;
+Gemini reviewed the interface, with verified fixes and rejected false positives
+recorded in evaluation/README.md. Headless Edge checks use an isolated temporary
+browser profile; its QA selections are not actual human approvals. The combined
+working tree passed 117 Python / 11 Node tests locally. This is local evidence,
+not a CI result. Source and tests are committed; generated pages, downloads and
+browser screenshots remain local ignored evidence.

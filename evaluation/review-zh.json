@@ -1,0 +1,56 @@
+{
+  "museum-adult": {
+    "question": "Orbit博物馆的成人票是多少积分？"
+  },
+  "museum-child": {
+    "question": "五岁儿童进入Orbit博物馆需要买票吗？"
+  },
+  "museum-water": {
+    "question": "参观者可以携带普通饮用水进入Orbit博物馆吗？"
+  },
+  "museum-last-entry": {
+    "question": "Orbit博物馆最后允许入场的时间是什么？问的是入场截止，而不是闭馆时间。"
+  },
+  "lab-capacity": {
+    "question": "银杉实验室每场活动最多允许多少人？"
+  },
+  "lab-identifier": {
+    "question": "银杉实验室的演示识别码是什么？"
+  },
+  "rail-cap": {
+    "question": "Orion规定每次铁路出行的报销上限是多少？"
+  },
+  "no-receipt": {
+    "question": "按Orion政策，没有原始票据的费用能报销吗？"
+  },
+  "shipping-april": {
+    "question": "2026年4月3日之后，20积分的订单应付多少Lark运费？"
+  },
+  "shipping-threshold": {
+    "question": "按4月通知，恰好60积分的订单可以免运费吗？"
+  },
+  "library-renewal": {
+    "question": "翠叶图书馆允许续借几次，每次延长多少天？"
+  },
+  "part-b": {
+    "question": "XR-71B需要多大套筒？"
+  },
+  "cross-fees": {
+    "question": "Orbit博物馆学生票多少钱，翠叶图书馆年度会员费多少钱？请分别回答。"
+  },
+  "unknown-director": {
+    "question": "Orbit博物馆馆长叫什么名字？"
+  },
+  "unknown-price": {
+    "question": "购买XR-71B需要多少钱？"
+  },
+  "unknown-weekend": {
+    "question": "Lark星期日几点配送？"
+  },
+  "followup-student": {
+    "question": "那需要多少钱？（请结合下面的前文判断所指。）"
+  },
+  "tail-distractors": {
+    "question": "SOLAR对接覆盖码是什么？"
+  }
+}
