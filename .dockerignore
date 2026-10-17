@@ -31,3 +31,8 @@ README.md
 # Deploy scripts / 部署脚本
 deploy_*.py
 check_*.py
+
+node_modules/
+evaluation/
+package.json
+package-lock.json

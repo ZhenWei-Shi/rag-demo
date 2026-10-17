@@ -1,0 +1,65 @@
+{
+  "evaluated_cases": 34,
+  "suite_cases": 34,
+  "complete_suite": true,
+  "execution_errors": 0,
+  "rule_passed": 32,
+  "rule_pass_rate": 0.9411764705882353,
+  "fact_match_rate": 0.9375,
+  "retrieval_evidence_recall": 1.0,
+  "refusal_rule_pass_rate": 1.0,
+  "categories": {
+    "number": {
+      "total": 7,
+      "rule_passed": 7
+    },
+    "fact": {
+      "total": 2,
+      "rule_passed": 2
+    },
+    "negation": {
+      "total": 3,
+      "rule_passed": 3
+    },
+    "time": {
+      "total": 4,
+      "rule_passed": 4
+    },
+    "identifier": {
+      "total": 3,
+      "rule_passed": 3
+    },
+    "version": {
+      "total": 2,
+      "rule_passed": 1
+    },
+    "boundary": {
+      "total": 2,
+      "rule_passed": 2
+    },
+    "multi_document": {
+      "total": 2,
+      "rule_passed": 1
+    },
+    "unanswerable": {
+      "total": 6,
+      "rule_passed": 6
+    },
+    "history": {
+      "total": 2,
+      "rule_passed": 2
+    },
+    "retrieval_stress": {
+      "total": 1,
+      "rule_passed": 1
+    }
+  },
+  "human_review": {
+    "reviewed": 34,
+    "coverage": 1.0,
+    "accuracy_on_decisive_reviews": 0.8235294117647058,
+    "confirmed_suite_accuracy": 0.8235294117647058,
+    "confirmed_suite_groundedness": null
+  },
+  "interpretation": "Rule matches and evidence recall are proxies, not whole-answer correctness or faithfulness. Synthetic development suite, not population accuracy."
+}

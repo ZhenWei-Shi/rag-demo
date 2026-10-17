@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "purpose": "Pre-improvement public synthetic benchmark evidence, user-authorized publication",
+  "generation_commit": "e8624926b2c777e16469b6886f30c305179238bb",
+  "verifier_commit": "a505953923719b5df9010b3ce52ab7e78a191da1",
+  "run_id": "3c1cca5f10c4484b8cf74a3b58f61c5f",
+  "model": "llama3.2:latest",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "generation_options": {
+    "temperature": 0,
+    "seed": 101,
+    "num_predict": 512
+  },
+  "human_correct": 28,
+  "human_total": 34,
+  "human_accuracy": 0.8235294117647058,
+  "rule_passed": 32,
+  "limitations": [
+    "Synthetic development suite; not production or population accuracy",
+    "Owner-reviewed, not blinded or independent reviewers",
+    "Wording accuracy included, especially case unknown-lab-year",
+    "Groundedness not yet human reviewed",
+    "Original generation and later schema migration distinguished in report"
+  ],
+  "files_sha256": {
+    "dataset.json": "b5d3b3c2b1d07b8102c972bf39a1d4cf00080058e7b9692fc2eeca48b61facc0",
+    "report.json": "e638514727d51835214229c586c70f857f545496b6f3bce868d0efe1fd655aae",
+    "review.json": "dc66c4f623c28e09b66c9c00137dbfecd301bb3b7afcc17c089ae7ad8a39f045",
+    "summary.json": "3a68155d2d0d568a2f83606f8f325ac4ba20e9ee46d19be90269bfa69f139b39"
+  }
+}

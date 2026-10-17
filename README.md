@@ -1,5 +1,9 @@
 # RAG Document Q&A
 
+## Answer evaluation (2026-10-16)
+
+An [independent local evaluation suite](evaluation/README.md) tests 34 English/Chinese questions against 14 fictional documents through the real upload/ask API. It reports expected-evidence recall, fact-pattern checks, source coverage and refusals, generates a Promptfoo per-case HTML report, and supports response-bound human review. The first local Ollama run passed 32/34 rules; subsequent reading found additional contradictions that keyword checks missed. **Rule pass rate is not confirmed answer accuracy or hosted-model performance.** No production request behavior changed.
+
 ## Reliability update (2026-10-16)
 
 [Development workflow, AI contributions, reproducible checks and limits](docs/DEVELOPMENT.md).

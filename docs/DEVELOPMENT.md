@@ -115,3 +115,29 @@ before committing; do not use a blanket add of runtime directories.
   Apache-2.0 licensing option in `static/vendor/DOMPurify.LICENSE`.
 - [MMR, Carbonell and Goldstein, SIGIR 1998](https://doi.org/10.1145/290941.291025),
   used as an algorithmic reference for relevance/diversity selection.
+
+
+## Independent evaluation feature (2026-10-16)
+
+The user selected an independent benchmark. Codex researched Ragas/Promptfoo,
+created `codex/rag-accuracy-evaluation` before editing code, and implemented an
+isolated real-API runner, frozen synthetic references, rule proxies, local
+Promptfoo replay/reporting and human-review bindings. This feature depends on
+the still-unmerged reliability PR and therefore uses that branch as its PR base;
+retarget after the dependency merges. No merge or production deployment occurred.
+
+Local verification: 105 Python tests, eleven Node contract tests, 34 real Ollama
+answers and a Promptfoo export whose per-case verdicts agree with the scorer.
+The initial baseline is 32/34 rule passes, with five model reading notes including
+additional false positives. Human-confirmed accuracy remains unavailable until
+human review is complete. This does not measure the hosted cloud model. Detailed
+commands, scope and limitations: [evaluation/README.md](../evaluation/README.md).
+After the user authorized CLI quota use, Claude reviewed scoring/runner integrity
+(one timeout, successful retry) and Gemini reviewed report interpretation and
+presentation. Codex checked their claims and added dataset-backed recomputation,
+serialized-response/execution bindings, failed-run baseline protection and
+per-assertion framework agreement. Findings that did not reproduce were not
+implemented. All labels remain pending human review; model consultation is not
+human approval. The Node dev tree has 10 high audit entries (three underlying
+advisories), documented with scope and upstream limits in the evaluation README.
+No clean-audit, CI, merge or deployment result is claimed.
