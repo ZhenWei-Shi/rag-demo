@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run_id": "d79be463bb3541a7b14f4fe7b567e140",
+  "dataset_sha256": "b5d3b3c2b1d07b8102c972bf39a1d4cf00080058e7b9692fc2eeca48b61facc0",
+  "files_sha256": {
+    "candidate-2-owner-review.json": "632752fe174810f2f1f760844c9b31e1a4473b942ca644585176eb4d0f8a968b",
+    "candidate-2-owner-summary.json": "9de7aa1f7a4852b29b8117bd324199a1f9b2462d2a765bcbb08d3bc1d31d2427",
+    "comparison-owner.json": "b868ebcb2c3a1de7dedbfc6c8769f2ff42445cc16df36c76030c03a8154e7f87",
+    "candidate-2-original.json": "d01698e497c4f8e5cdff938c6417c5fe18750f288765e85f43cce5ca1f0960f3"
+  },
+  "limitations": [
+    "Same-owner non-blinded development review",
+    "Not representative production accuracy",
+    "Tail case context changed; full delta is not a prompt-only causal effect",
+    "Case museum-opening marked correctness fail, groundedness pass by owner; retain that rubric distinction rather than silently override"
+  ]
+}

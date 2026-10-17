@@ -20,7 +20,7 @@ const baseRows=new Map((data.baseline?.rows||[]).map(r=>[r.id,r])),baseLabels=ne
 const sourceLabels=new Map((data.review?.rows||[]).map(r=>[r.id,r]));
 const empty=report.rows.map(r=>({id:r.id,response_sha256:r.response_sha256,record_sha256:r.record_sha256,question:r.question,reference_answer:r.reference_answer,answer:r.response?.answer||'',correctness:'pending',groundedness:'pending',reviewer:'',notes:''}));
 let reviews=empty.map(r=>({...r,...sourceLabels.get(r.id)})),cursor=0,changed=false;
-const storageKey='rag-human-review:'+report.run_id+':'+report.dataset_sha256;
+const storageKey='rag-human-review:'+report.run_id+':'+report.dataset_sha256+':'+data.review_revision;
 try{const saved=JSON.parse(localStorage.getItem(storageKey));if(saved&&saved.length===reviews.length&&saved.every((r,i)=>r.id===reviews[i].id&&r.response_sha256===reviews[i].response_sha256&&r.record_sha256===reviews[i].record_sha256&&['pending','pass','fail','unsure'].includes(r.correctness)&&['pending','pass','fail','unsure'].includes(r.groundedness)&&typeof r.notes==='string')){reviews=saved;changed=true}}catch{}
 $('reviewer').value=reviews.find(r=>r.reviewer)?.reviewer||'';
 function text(id,value){$(id).textContent=value}

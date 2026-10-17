@@ -2,7 +2,7 @@
 import argparse
 import json
 from pathlib import Path
-from evaluation.metrics import Reference, summarize
+from evaluation.metrics import Reference, summarize, response_hash
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -15,6 +15,7 @@ def build_page(reference, report, review=None, baseline=None, baseline_review=No
             raise ValueError('Paired review requires the same model digest and generation parameters')
     payload={'dataset':reference.data,'report':report,'review':review,
              'baseline':baseline,'baseline_review':baseline_review,'summary':summary,
+             'review_revision':response_hash(review) if review is not None else 'unreviewed',
              'translations':json.loads((ROOT/'evaluation/review-zh.json').read_text(encoding='utf8'))}
     payload['report']={**report,'summary':summary}
     # JSON is data, never markup; avoid closing the script element from an answer.

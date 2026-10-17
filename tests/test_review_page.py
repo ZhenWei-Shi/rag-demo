@@ -40,3 +40,13 @@ def test_stale_human_review_is_rejected():
 def test_different_model_comparison_is_rejected():
     report=load('report.json');report['model_digest']='changed'
     with pytest.raises(ValueError,match='same model'):build_page(Reference.load(BASE/'dataset.json'),report,baseline=load('report.json'))
+
+
+def test_explicit_review_revision_isolates_stale_browser_cache():
+    ref=Reference.load(BASE/'dataset.json');report=load('report.json');first=load('review.json')
+    second=copy.deepcopy(first);second['rows'][0]['notes']='New explicit human confirmation'
+    payload=lambda text:json.loads(re.search(r'<script id="data" type="application/json">(.*?)</script>',text,re.S).group(1))
+    one=payload(build_page(ref,report,first));two=payload(build_page(ref,report,second))
+    assert one['review_revision']!=two['review_revision']
+    assert one['review_revision']==payload(build_page(ref,report,first))['review_revision']
+    assert "+':'+data.review_revision" in build_page(ref,report,second)

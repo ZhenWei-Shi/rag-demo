@@ -178,3 +178,16 @@ repository permissions and do not run cloud/Ollama generation or deploy anything
 A green regression job does not clear the documented npm dependency audit warnings,
 prove answer accuracy or constitute independent human approval. Report the actual
 Actions outcome separately from the existing local 117/11 result.
+
+
+## Imported owner review
+
+The owner exported candidate-2 human judgments; all question/answer fields and
+run/dataset/response/execution bindings were checked. One pending correctness
+label was explicitly confirmed in chat. Original downloads and prior templates
+remain local, read-only/archived; public files use a reviewer role rather than the
+nickname. The 28/34 -> 32/34 same-owner development result, all gains/regressions
+and comparability limits are preserved with a file manifest on a separate
+codex/rag-human-results branch. Explicit review revisions also scope browser cache
+keys, so regenerating a page from updated human labels cannot reload an older
+cache. This does not silently replace unsaved edits from the same review revision.
