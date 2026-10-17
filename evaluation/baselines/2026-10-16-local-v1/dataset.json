@@ -1,0 +1,701 @@
+{
+  "schema_version": 1,
+  "dataset_version": "synthetic-v1",
+  "scope": "Fictional development evaluation only. Not a representative or blinded production accuracy benchmark. No RAG ranking/generation changes tuned in this feature.",
+  "documents": {
+    "museum.md": "Fictional Orbit Museum visitor policy. Adult admission is 12 credits. Student admission is 7 credits. Children under 6 enter free. The museum is closed on Mondays. Tuesday through Sunday it opens at 09:30 and closes at 17:00. Last entry is 16:20. Refund requests require at least 48 hours notice. Food is prohibited; plain drinking water is allowed. No director name or founding year is stated.",
+    "lab.md": "虚构的银杉（Silver Fir）实验室每周四15:00开放。预约必须提前4天。每场最多9人。演示识别码为TULIP-682。这里未提供成立年份或负责人姓名。",
+    "expenses.md": "Fictional Orion rail-travel expense rules. Rail reimbursement is capped at 180 USD per trip. Hotel reimbursement is capped at 95 USD per night. Original receipts are mandatory; expenses without receipts are not reimbursed. The document does not state the CEO name.",
+    "shipping-march.md": "Fictional Lark shipping notice, effective March 1, 2026: shipping costs 8 credits per order. A later notice may supersede this price.",
+    "shipping-april.md": "Fictional Lark shipping notice, effective April 3, 2026: shipping now costs 10 credits per order, replacing the March price. Orders totaling at least 60 credits qualify for free shipping. Weekend delivery schedules are not provided.",
+    "library.md": "虚构的翠叶（Veridian）图书馆：图书借期28天，最多可续借1次，每次延长14天。有逾期未还图书时不能续借。年度会员费24积分。本文没有联系电话。",
+    "parts.md": "Fictional Aster maintenance parts. XR-71B requires a 13 mm socket. XR-71C requires a 19 mm socket. Purchase prices are not specified.",
+    "tail-checklist.txt": "General maintenance checklist. ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok ok The SOLAR docking override code is CORAL-581.",
+    "docking-bulletin-0.txt": "SOLAR docking override code bulletin 0. This bulletin does not list the docking override code. Consult the general maintenance checklist for the authorization code. Only equipment maintenance is discussed here.",
+    "docking-bulletin-1.txt": "SOLAR docking override code bulletin 1. This bulletin does not list the docking override code. Consult the general maintenance checklist for the authorization code. Only equipment maintenance is discussed here.",
+    "docking-bulletin-2.txt": "SOLAR docking override code bulletin 2. This bulletin does not list the docking override code. Consult the general maintenance checklist for the authorization code. Only equipment maintenance is discussed here.",
+    "docking-bulletin-3.txt": "SOLAR docking override code bulletin 3. This bulletin does not list the docking override code. Consult the general maintenance checklist for the authorization code. Only equipment maintenance is discussed here.",
+    "docking-bulletin-4.txt": "SOLAR docking override code bulletin 4. This bulletin does not list the docking override code. Consult the general maintenance checklist for the authorization code. Only equipment maintenance is discussed here.",
+    "docking-bulletin-5.txt": "SOLAR docking override code bulletin 5. This bulletin does not list the docking override code. Consult the general maintenance checklist for the authorization code. Only equipment maintenance is discussed here."
+  },
+  "cases": [
+    {
+      "id": "museum-adult",
+      "category": "number",
+      "question": "What is adult admission to Orbit Museum?",
+      "reference_answer": "12 credits.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "adult fee",
+          "source": "museum.md",
+          "quote": "Adult admission is 12 credits.",
+          "patterns": [
+            "(?<!\\d)12(?!\\d)|twelve"
+          ]
+        }
+      ],
+      "forbidden_patterns": [
+        "(?:not|不是|并非)\\s*12"
+      ]
+    },
+    {
+      "id": "museum-student",
+      "category": "number",
+      "question": "Orbit博物馆的学生票多少积分？",
+      "reference_answer": "7积分。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "student fee",
+          "source": "museum.md",
+          "quote": "Student admission is 7 credits.",
+          "patterns": [
+            "(?<!\\d)7(?!\\d)|seven|七"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "museum-child",
+      "category": "fact",
+      "question": "Does a five-year-old need to pay admission at Orbit Museum?",
+      "reference_answer": "No. Children under 6 enter free.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "Children under 6 enter free.",
+          "source": "museum.md",
+          "quote": "Children under 6 enter free.",
+          "patterns": [
+            "free|免费|不需要付费"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "museum-closed",
+      "category": "fact",
+      "question": "Orbit博物馆哪天不开放？",
+      "reference_answer": "每周一关闭。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "closed day",
+          "source": "museum.md",
+          "quote": "The museum is closed on Mondays.",
+          "patterns": [
+            "monday|星期一|周一"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "museum-water",
+      "category": "negation",
+      "question": "Can visitors bring plain drinking water into Orbit Museum?",
+      "reference_answer": "Yes. Plain drinking water is allowed; food is prohibited.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "plain drinking water is allowed.",
+          "source": "museum.md",
+          "quote": "plain drinking water is allowed.",
+          "patterns": [
+            "(?:water.{0,35}(?:allowed|permitted)|(?:yes|可以)|允许.*水)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "museum-opening",
+      "category": "time",
+      "question": "Orbit博物馆开放日几点开门？",
+      "reference_answer": "09:30开门。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "it opens at 09:30",
+          "source": "museum.md",
+          "quote": "it opens at 09:30",
+          "patterns": [
+            "0?9[:：]30|九点半"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "museum-last-entry",
+      "category": "time",
+      "question": "What is Orbit Museum last entry time, rather than its closing time?",
+      "reference_answer": "16:20; closing is 17:00.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "last entry",
+          "source": "museum.md",
+          "quote": "Last entry is 16:20.",
+          "patterns": [
+            "16[:：]20|4[:：]20\\s*(?:p\\.?m\\.?)|下午四点二十"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "museum-refund",
+      "category": "time",
+      "question": "Orbit博物馆退款至少要提前多少小时申请？",
+      "reference_answer": "至少48小时。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "refund notice hours",
+          "source": "museum.md",
+          "quote": "Refund requests require at least 48 hours notice.",
+          "patterns": [
+            "(?<!\\d)48(?!\\d)|forty.eight|四十八"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "lab-booking",
+      "category": "number",
+      "question": "银杉实验室需要提前几天预约？",
+      "reference_answer": "4天。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "booking notice",
+          "source": "lab.md",
+          "quote": "预约必须提前4天。",
+          "patterns": [
+            "(?<!\\d)4(?!\\d)|four|四天"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "lab-capacity",
+      "category": "number",
+      "question": "How many visitors can attend one Silver Fir laboratory session?",
+      "reference_answer": "At most 9 people.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "capacity",
+          "source": "lab.md",
+          "quote": "每场最多9人。",
+          "patterns": [
+            "(?<!\\d)9(?!\\d)|nine|九人"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "lab-open",
+      "category": "time",
+      "question": "银杉实验室每周什么时候开放？",
+      "reference_answer": "每周四15:00。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "每周四15:00开放。",
+          "source": "lab.md",
+          "quote": "每周四15:00开放。",
+          "patterns": [
+            "星期四|周四|thursday"
+          ]
+        },
+        {
+          "name": "每周四15:00开放。",
+          "source": "lab.md",
+          "quote": "每周四15:00开放。",
+          "patterns": [
+            "15[:：]00|下午三点|3\\s*p\\.?m\\.?"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "lab-identifier",
+      "category": "identifier",
+      "question": "What is the demo identifier at the Silver Fir lab?",
+      "reference_answer": "TULIP-682.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "演示识别码为TULIP-682。",
+          "source": "lab.md",
+          "quote": "演示识别码为TULIP-682。",
+          "patterns": [
+            "\\bTULIP[-‐‑–— ]682\\b"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "rail-cap",
+      "category": "number",
+      "question": "What is the per-trip rail reimbursement cap under Orion rules?",
+      "reference_answer": "180 USD per trip.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "Rail reimbursement is capped at 180 USD per trip.",
+          "source": "expenses.md",
+          "quote": "Rail reimbursement is capped at 180 USD per trip.",
+          "patterns": [
+            "(?<!\\d)180(?!\\d)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "hotel-cap",
+      "category": "number",
+      "question": "Orion的酒店每晚报销上限是多少美元？",
+      "reference_answer": "每晚95美元。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "Hotel reimbursement is capped at 95 USD per night.",
+          "source": "expenses.md",
+          "quote": "Hotel reimbursement is capped at 95 USD per night.",
+          "patterns": [
+            "(?<!\\d)95(?!\\d)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "no-receipt",
+      "category": "negation",
+      "question": "Under Orion policy, can an expense without original receipts be reimbursed?",
+      "reference_answer": "No. Original receipts are mandatory.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "expenses without receipts are not reimbursed.",
+          "source": "expenses.md",
+          "quote": "expenses without receipts are not reimbursed.",
+          "patterns": [
+            "\\bno\\b|not reimburs|cannot.{0,20}reimburs|不(?:能|予|可)报销"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "shipping-april",
+      "category": "version",
+      "question": "What is the Lark shipping fee after April 3, 2026 for a 20-credit order?",
+      "reference_answer": "10 credits. The March fee was superseded.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "shipping now costs 10 credits per order",
+          "source": "shipping-april.md",
+          "quote": "shipping now costs 10 credits per order",
+          "patterns": [
+            "(?<!\\d)10(?!\\d)"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "shipping-march",
+      "category": "version",
+      "question": "按照2026年3月1日的旧通知，Lark每单运费是多少？",
+      "reference_answer": "8积分。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "shipping costs 8 credits per order.",
+          "source": "shipping-march.md",
+          "quote": "shipping costs 8 credits per order.",
+          "patterns": [
+            "(?<!\\d)8(?!\\d)|eight|八"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "shipping-threshold",
+      "category": "boundary",
+      "question": "Does an order of exactly 60 credits qualify for free Lark shipping under the April notice?",
+      "reference_answer": "Yes; orders of at least 60 credits qualify.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "Orders totaling at least 60 credits qualify for free shipping.",
+          "source": "shipping-april.md",
+          "quote": "Orders totaling at least 60 credits qualify for free shipping.",
+          "patterns": [
+            "\\byes\\b|qualif|可以|免运费|免费"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "library-loan",
+      "category": "number",
+      "question": "翠叶图书馆的借书期限是多少天？",
+      "reference_answer": "28天。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "图书借期28天",
+          "source": "library.md",
+          "quote": "图书借期28天",
+          "patterns": [
+            "(?<!\\d)28(?!\\d)|二十八"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "library-renewal",
+      "category": "boundary",
+      "question": "How many renewals are allowed at Veridian Library, and how many days does a renewal add?",
+      "reference_answer": "One renewal, adding 14 days.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "最多可续借1次",
+          "source": "library.md",
+          "quote": "最多可续借1次",
+          "patterns": [
+            "(?<!\\d)1(?!\\d)|one|once|一次"
+          ]
+        },
+        {
+          "name": "每次延长14天",
+          "source": "library.md",
+          "quote": "每次延长14天",
+          "patterns": [
+            "(?<!\\d)14(?!\\d)|fourteen|十四"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "library-overdue",
+      "category": "negation",
+      "question": "有逾期未还图书时，翠叶图书馆还能续借吗？",
+      "reference_answer": "不能续借。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "有逾期未还图书时不能续借。",
+          "source": "library.md",
+          "quote": "有逾期未还图书时不能续借。",
+          "patterns": [
+            "不能|不可|不允许|无法|不可以"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "part-b",
+      "category": "identifier",
+      "question": "Which socket size does XR-71B require?",
+      "reference_answer": "13 mm.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "XR-71B requires a 13 mm socket.",
+          "source": "parts.md",
+          "quote": "XR-71B requires a 13 mm socket.",
+          "patterns": [
+            "(?<!\\d)13(?!\\d)|thirteen"
+          ]
+        }
+      ],
+      "forbidden_patterns": [
+        "(?<!\\d)19(?!\\d)"
+      ]
+    },
+    {
+      "id": "part-c",
+      "category": "identifier",
+      "question": "XR-71C需要多大套筒？",
+      "reference_answer": "19毫米。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "XR-71C requires a 19 mm socket.",
+          "source": "parts.md",
+          "quote": "XR-71C requires a 19 mm socket.",
+          "patterns": [
+            "(?<!\\d)19(?!\\d)|十九"
+          ]
+        }
+      ],
+      "forbidden_patterns": [
+        "(?<!\\d)13(?!\\d)"
+      ]
+    },
+    {
+      "id": "cross-booking",
+      "category": "multi_document",
+      "question": "分别说出银杉实验室预约需提前几天、Orbit退款需提前几小时。",
+      "reference_answer": "银杉4天；Orbit退款48小时。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "booking notice",
+          "source": "lab.md",
+          "quote": "预约必须提前4天。",
+          "patterns": [
+            "(?<!\\d)4(?!\\d)|four|四天"
+          ]
+        },
+        {
+          "name": "refund notice hours",
+          "source": "museum.md",
+          "quote": "Refund requests require at least 48 hours notice.",
+          "patterns": [
+            "(?<!\\d)48(?!\\d)|forty.eight|四十八"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "cross-fees",
+      "category": "multi_document",
+      "question": "What is Orbit student admission, and what is Veridian annual membership? Give both prices.",
+      "reference_answer": "Orbit student admission 7 credits; Veridian membership 24 credits.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "student fee",
+          "source": "museum.md",
+          "quote": "Student admission is 7 credits.",
+          "patterns": [
+            "(?<!\\d)7(?!\\d)|seven|七"
+          ]
+        },
+        {
+          "name": "membership",
+          "source": "library.md",
+          "quote": "年度会员费24积分。",
+          "patterns": [
+            "(?<!\\d)24(?!\\d)|twenty.four|二十四"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    },
+    {
+      "id": "unknown-director",
+      "category": "unanswerable",
+      "question": "Who is the director of Orbit Museum?",
+      "reference_answer": "The provided documents do not name the director.",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [],
+      "refusal_patterns": [
+        "not (?:provided|specified|mentioned|found|available|included|listed)",
+        "(?:do not|does not|don't|doesn't|cannot|can't|could not|couldn't).{0,70}(?:find|provide|determine|answer|name|state|specify|mention|contain|list)",
+        "no (?:mention|details|record|information)",
+        "not enough information",
+        "未(?:提供|说明|提及|给出|找到|包含|列出)",
+        "没有.{0,15}(?:信息|说明|提及|提供|给出|记录)",
+        "无法.{0,12}(?:确定|得知|回答|查到)"
+      ]
+    },
+    {
+      "id": "unknown-lab-year",
+      "category": "unanswerable",
+      "question": "银杉实验室成立于哪一年？",
+      "reference_answer": "资料未提供成立年份。",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [
+        "(?<!\\d)(?:19|20)\\d{2}(?!\\d)"
+      ],
+      "refusal_patterns": [
+        "not (?:provided|specified|mentioned|found|available|included|listed)",
+        "(?:do not|does not|don't|doesn't|cannot|can't|could not|couldn't).{0,70}(?:find|provide|determine|answer|name|state|specify|mention|contain|list)",
+        "no (?:mention|details|record|information)",
+        "not enough information",
+        "未(?:提供|说明|提及|给出|找到|包含|列出)",
+        "没有.{0,15}(?:信息|说明|提及|提供|给出|记录)",
+        "无法.{0,12}(?:确定|得知|回答|查到)"
+      ]
+    },
+    {
+      "id": "unknown-phone",
+      "category": "unanswerable",
+      "question": "翠叶图书馆的联系电话是什么？",
+      "reference_answer": "资料未提供联系电话。",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [
+        "\\d{7,}"
+      ],
+      "refusal_patterns": [
+        "not (?:provided|specified|mentioned|found|available|included|listed)",
+        "(?:do not|does not|don't|doesn't|cannot|can't|could not|couldn't).{0,70}(?:find|provide|determine|answer|name|state|specify|mention|contain|list)",
+        "no (?:mention|details|record|information)",
+        "not enough information",
+        "未(?:提供|说明|提及|给出|找到|包含|列出)",
+        "没有.{0,15}(?:信息|说明|提及|提供|给出|记录)",
+        "无法.{0,12}(?:确定|得知|回答|查到)"
+      ]
+    },
+    {
+      "id": "unknown-price",
+      "category": "unanswerable",
+      "question": "How much does XR-71B cost to buy?",
+      "reference_answer": "The purchase price is not specified.",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [
+        "[$¥￥]\\s*\\d|\\d+\\s*(?:USD|dollars|credits|美元|积分)"
+      ],
+      "refusal_patterns": [
+        "not (?:provided|specified|mentioned|found|available|included|listed)",
+        "(?:do not|does not|don't|doesn't|cannot|can't|could not|couldn't).{0,70}(?:find|provide|determine|answer|name|state|specify|mention|contain|list)",
+        "no (?:mention|details|record|information)",
+        "not enough information",
+        "未(?:提供|说明|提及|给出|找到|包含|列出)",
+        "没有.{0,15}(?:信息|说明|提及|提供|给出|记录)",
+        "无法.{0,12}(?:确定|得知|回答|查到)"
+      ]
+    },
+    {
+      "id": "unknown-weekend",
+      "category": "unanswerable",
+      "question": "What time does Lark deliver on Sunday?",
+      "reference_answer": "Weekend delivery times are not provided.",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [
+        "(?<!\\d)\\d{1,2}:\\d{2}(?!\\d)"
+      ],
+      "refusal_patterns": [
+        "not (?:provided|specified|mentioned|found|available|included|listed)",
+        "(?:do not|does not|don't|doesn't|cannot|can't|could not|couldn't).{0,70}(?:find|provide|determine|answer|name|state|specify|mention|contain|list)",
+        "no (?:mention|details|record|information)",
+        "not enough information",
+        "未(?:提供|说明|提及|给出|找到|包含|列出)",
+        "没有.{0,15}(?:信息|说明|提及|提供|给出|记录)",
+        "无法.{0,12}(?:确定|得知|回答|查到)"
+      ]
+    },
+    {
+      "id": "unknown-ceo",
+      "category": "unanswerable",
+      "question": "Orion公司的CEO叫什么名字？",
+      "reference_answer": "资料未提供CEO姓名。",
+      "unanswerable": true,
+      "facts": [],
+      "forbidden_patterns": [],
+      "refusal_patterns": [
+        "not (?:provided|specified|mentioned|found|available|included|listed)",
+        "(?:do not|does not|don't|doesn't|cannot|can't|could not|couldn't).{0,70}(?:find|provide|determine|answer|name|state|specify|mention|contain|list)",
+        "no (?:mention|details|record|information)",
+        "not enough information",
+        "未(?:提供|说明|提及|给出|找到|包含|列出)",
+        "没有.{0,15}(?:信息|说明|提及|提供|给出|记录)",
+        "无法.{0,12}(?:确定|得知|回答|查到)"
+      ]
+    },
+    {
+      "id": "followup-booking",
+      "category": "history",
+      "question": "那需要提前几天预约？",
+      "reference_answer": "银杉实验室需提前4天预约。",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "booking notice",
+          "source": "lab.md",
+          "quote": "预约必须提前4天。",
+          "patterns": [
+            "(?<!\\d)4(?!\\d)|four|四天"
+          ]
+        }
+      ],
+      "forbidden_patterns": [],
+      "history": [
+        {
+          "role": "user",
+          "content": "我现在问的是银杉实验室。"
+        },
+        {
+          "role": "assistant",
+          "content": "好的，请继续问银杉实验室的规定。"
+        }
+      ]
+    },
+    {
+      "id": "followup-student",
+      "category": "history",
+      "question": "How much does it cost?",
+      "reference_answer": "Orbit Museum student admission is 7 credits.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "student fee",
+          "source": "museum.md",
+          "quote": "Student admission is 7 credits.",
+          "patterns": [
+            "(?<!\\d)7(?!\\d)|seven|七"
+          ]
+        }
+      ],
+      "forbidden_patterns": [],
+      "history": [
+        {
+          "role": "user",
+          "content": "I am a student planning to visit Orbit Museum. I want the student ticket."
+        },
+        {
+          "role": "assistant",
+          "content": "You are asking about an Orbit Museum student ticket."
+        }
+      ]
+    },
+    {
+      "id": "tail-distractors",
+      "category": "retrieval_stress",
+      "question": "What is the SOLAR docking override code?",
+      "reference_answer": "CORAL-581.",
+      "unanswerable": false,
+      "facts": [
+        {
+          "name": "The SOLAR docking override code is CORAL-581.",
+          "source": "tail-checklist.txt",
+          "quote": "The SOLAR docking override code is CORAL-581.",
+          "patterns": [
+            "\\bCORAL[-‐‑–— ]581\\b"
+          ]
+        }
+      ],
+      "forbidden_patterns": []
+    }
+  ]
+}
