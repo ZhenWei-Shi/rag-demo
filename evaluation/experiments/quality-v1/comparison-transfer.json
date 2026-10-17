@@ -1,0 +1,116 @@
+{
+  "dataset_sha256": "996f60f295af2ae1c3a03ab5b3551f435547d5fa43c04f05062fa2f868127cad",
+  "before_run": "a946b1018e974138a371a0eef7eaf858",
+  "after_run": "b941158afbc442fda7697ca0a7063f0b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "generation": {
+    "temperature": 0,
+    "seed": 101,
+    "num_predict": 512
+  },
+  "before_rule_passed": 9,
+  "after_rule_passed": 11,
+  "cases": 12,
+  "rule_gains": [
+    "transfer-last-entry",
+    "transfer-two-fees",
+    "transfer-closed"
+  ],
+  "rule_regressions": [
+    "transfer-old-price"
+  ],
+  "retrieval_unchanged_for_all": true,
+  "context_matched_cases": 12,
+  "context_matched_before_passed": 9,
+  "context_matched_after_passed": 11,
+  "before_human_accuracy": null,
+  "after_human_accuracy": null,
+  "human_accuracy_delta": null,
+  "rows": [
+    {
+      "id": "transfer-open",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-last-entry",
+      "before_rule": false,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-two-fees",
+      "before_rule": false,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-two-notices",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-new-price",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-old-price",
+      "before_rule": true,
+      "after_rule": false,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-boundary",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-code",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-closed",
+      "before_rule": false,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-unknown-phone",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-unknown-director",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    },
+    {
+      "id": "transfer-unknown-price",
+      "before_rule": true,
+      "after_rule": true,
+      "answer_changed": true,
+      "retrieval_unchanged": true
+    }
+  ],
+  "limitation": "Rules are proxies; newly generated answers require fresh human review. Disclosed synthetic development cases do not establish general accuracy."
+}

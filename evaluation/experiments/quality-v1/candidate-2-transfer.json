@@ -1,0 +1,990 @@
+{
+  "schema_version": 2,
+  "run_id": "b941158afbc442fda7697ca0a7063f0b",
+  "created_at": "2026-10-17T03:22:36.706319+00:00",
+  "dataset_sha256": "996f60f295af2ae1c3a03ab5b3551f435547d5fa43c04f05062fa2f868127cad",
+  "dataset_version": "transfer-preregistered-v1",
+  "suite_cases": 12,
+  "scope": "Fictional transfer suite preregistered before answer-quality changes. Same author, small disclosed set; not independently blinded or representative production evaluation.",
+  "provider": "ollama",
+  "model": "llama3.2:latest",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "generation": {
+    "temperature": 0,
+    "seed": 101,
+    "num_predict": 512
+  },
+  "git_commit": "1c303d20ae44a7d92f6772c0275f11fe74818a8f",
+  "working_tree_dirty": false,
+  "complete": true,
+  "all_executed": true,
+  "rows": [
+    {
+      "seconds": 0.46,
+      "id": "transfer-open",
+      "category": "time",
+      "question": "Amber Harbor在开放日几点开门？",
+      "reference_answer": "10:15。",
+      "unanswerable": false,
+      "case_sha256": "2b9bd882e5192d41d4b1da28344749e3deca3cfe0ecb2e46a35c0cfc54bcd65d",
+      "response": {
+        "answer": "* 每个开放日，Amber Harbor 的门户在 10:15 点开门。\n* 每个开放日，Amber Harbor 的门户在 18:40 点关闭。",
+        "sources": [
+          "workshop.md",
+          "harbor.md",
+          "equipment.md",
+          "delivery-old.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"* 每个开放日，Amber Harbor 的门户在 10:15 点开门。\\n* 每个开放日，Amber Harbor 的门户在 18:40 点关闭。\",\"chunks\":[{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"workshop.md\",\"harbor.md\",\"equipment.md\",\"delivery-old.md\",\"delivery-new.md\"]}",
+      "response_sha256": "12f75c325e6a771975ee46217c02dbf859465c76c7868e9c12486dc83a832c5a",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 385,
+        "eval_count": 42,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "doors open at 10:15",
+            "source": "harbor.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"2b9bd882e5192d41d4b1da28344749e3deca3cfe0ecb2e46a35c0cfc54bcd65d\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":42,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":385},\"response_sha256\":\"12f75c325e6a771975ee46217c02dbf859465c76c7868e9c12486dc83a832c5a\"}",
+      "record_sha256": "6dcd61318c119c74062cf5e8126cb9a95dc088ac9044be62d9ff2e24f0aa82c8"
+    },
+    {
+      "seconds": 0.2,
+      "id": "transfer-last-entry",
+      "category": "time",
+      "question": "What is Amber Harbor last entry, rather than closing time?",
+      "reference_answer": "18:05.",
+      "unanswerable": false,
+      "case_sha256": "00dba461ad7a1777d39f2be66e7fc67f74f7118673ce0f29cae480733f6dd393",
+      "response": {
+        "answer": "• Last entry at Amber Harbor is 18:05.",
+        "sources": [
+          "harbor.md",
+          "workshop.md",
+          "equipment.md",
+          "delivery-old.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"• Last entry at Amber Harbor is 18:05.\",\"chunks\":[{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"harbor.md\",\"workshop.md\",\"equipment.md\",\"delivery-old.md\",\"delivery-new.md\"]}",
+      "response_sha256": "3741105b2186e0d186353b3c10dafb7fdcec545e68fc813faf5b86b0d5634ca8",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 386,
+        "eval_count": 13,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "Last entry is 18:05.",
+            "source": "harbor.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"00dba461ad7a1777d39f2be66e7fc67f74f7118673ce0f29cae480733f6dd393\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":13,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":386},\"response_sha256\":\"3741105b2186e0d186353b3c10dafb7fdcec545e68fc813faf5b86b0d5634ca8\"}",
+      "record_sha256": "363304d71520a6f84b4371f9632251a5ad443726e46f1ac81aa41c65912a5a81"
+    },
+    {
+      "seconds": 0.272,
+      "id": "transfer-two-fees",
+      "category": "multi_document",
+      "question": "What are Amber Harbor youth admission and the workshop annual membership fee?",
+      "reference_answer": "6 tokens and 32 credits respectively.",
+      "unanswerable": false,
+      "case_sha256": "9a73fe497344c6b21f9467db2606bf36834cfad1fcf1ce2c18084967409b17fe",
+      "response": {
+        "answer": "* Amber Harbor youth admission costs 6 tokens.\n* The workshop annual membership fee is 32 tokens.",
+        "sources": [
+          "harbor.md",
+          "delivery-new.md",
+          "workshop.md",
+          "equipment.md",
+          "delivery-old.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"* Amber Harbor youth admission costs 6 tokens.\\n* The workshop annual membership fee is 32 tokens.\",\"chunks\":[{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"}],\"sources\":[\"harbor.md\",\"delivery-new.md\",\"workshop.md\",\"equipment.md\",\"delivery-old.md\"]}",
+      "response_sha256": "c87b35e3a5d2d4a9b8673e0f693648092a5e142df9d2e7ba1aae4dcddd70b26f",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 387,
+        "eval_count": 22,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "Youth admission costs 6 tokens.",
+            "source": "harbor.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          },
+          {
+            "name": "年度会费32积分。",
+            "source": "workshop.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"9a73fe497344c6b21f9467db2606bf36834cfad1fcf1ce2c18084967409b17fe\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":22,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":387},\"response_sha256\":\"c87b35e3a5d2d4a9b8673e0f693648092a5e142df9d2e7ba1aae4dcddd70b26f\"}",
+      "record_sha256": "0821ff3c418111170628142d0e7cdcc9f501bfc1ebd94e2e7826a56d2f5155d7"
+    },
+    {
+      "seconds": 0.288,
+      "id": "transfer-two-notices",
+      "category": "multi_fact",
+      "question": "分别说出青石工作坊预约需提前几天，退款需提前几小时。",
+      "reference_answer": "预约5天，退款36小时。",
+      "unanswerable": false,
+      "case_sha256": "340700339531661c4b4bb1006e43698da85cfad479689ca9cb110b2e57eee06f",
+      "response": {
+        "answer": "*   预约需提前5天。\n*   退款至少提前36小时通知。",
+        "sources": [
+          "workshop.md",
+          "equipment.md",
+          "delivery-old.md",
+          "harbor.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"*   预约需提前5天。\\n*   退款至少提前36小时通知。\",\"chunks\":[{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"workshop.md\",\"equipment.md\",\"delivery-old.md\",\"harbor.md\",\"delivery-new.md\"]}",
+      "response_sha256": "c27b7304eb6200b7a14b79559eb2a83c0056df7ff3c340b66b382a45af8573a9",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 397,
+        "eval_count": 23,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "预约提前5天",
+            "source": "workshop.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          },
+          {
+            "name": "退款至少提前36小时通知。",
+            "source": "workshop.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"340700339531661c4b4bb1006e43698da85cfad479689ca9cb110b2e57eee06f\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":23,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":397},\"response_sha256\":\"c27b7304eb6200b7a14b79559eb2a83c0056df7ff3c340b66b382a45af8573a9\"}",
+      "record_sha256": "9c62669df7a53b0464ac8dfeba69fc81fdfc0d4c44b356f759ed35c1b337ba08"
+    },
+    {
+      "seconds": 0.553,
+      "id": "transfer-new-price",
+      "category": "version",
+      "question": "What is the Pine delivery fee on February 10, 2026 for a 30-token order?",
+      "reference_answer": "11 tokens.",
+      "unanswerable": false,
+      "case_sha256": "4878e4493ed780ad8754b4d788e164edd41ff233dcb7b87bf1b373c91fb1875d",
+      "response": {
+        "answer": "* On February 10, 2026, the Pine delivery fee is 11 tokens per order.\n* For a 30-token order, the fee is 11 tokens.\n* Since the order is less than 75 tokens, it does not receive free delivery.",
+        "sources": [
+          "delivery-new.md",
+          "harbor.md",
+          "delivery-old.md",
+          "equipment.md",
+          "workshop.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"* On February 10, 2026, the Pine delivery fee is 11 tokens per order.\\n* For a 30-token order, the fee is 11 tokens.\\n* Since the order is less than 75 tokens, it does not receive free delivery.\",\"chunks\":[{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"}],\"sources\":[\"delivery-new.md\",\"harbor.md\",\"delivery-old.md\",\"equipment.md\",\"workshop.md\"]}",
+      "response_sha256": "8989b2273f254e719dbf2f08a78429eb7d9b8df26001b751cd4b5b2c942426e9",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 395,
+        "eval_count": 55,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "delivery costs 11 tokens per order",
+            "source": "delivery-new.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"4878e4493ed780ad8754b4d788e164edd41ff233dcb7b87bf1b373c91fb1875d\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":55,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":395},\"response_sha256\":\"8989b2273f254e719dbf2f08a78429eb7d9b8df26001b751cd4b5b2c942426e9\"}",
+      "record_sha256": "932d5bb5ff45a47c18ad823b4c1bfc195e2bbe73432b86c0c47d96f8ac5ee0cb"
+    },
+    {
+      "seconds": 0.305,
+      "id": "transfer-old-price",
+      "category": "version",
+      "question": "按2026年1月2日通知，Pine每单配送费是多少？",
+      "reference_answer": "7积分。",
+      "unanswerable": false,
+      "case_sha256": "b3dea7dfbeff00fae161d18ef2e5bc0ef24746d5ec536560b2659cbd448bb7ec",
+      "response": {
+        "answer": "2026年1月2日通知中，Pine的配送费为每单11个token。",
+        "sources": [
+          "workshop.md",
+          "delivery-new.md",
+          "delivery-old.md",
+          "equipment.md",
+          "harbor.md"
+        ],
+        "chunks": [
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"2026年1月2日通知中，Pine的配送费为每单11个token。\",\"chunks\":[{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"}],\"sources\":[\"workshop.md\",\"delivery-new.md\",\"delivery-old.md\",\"equipment.md\",\"harbor.md\"]}",
+      "response_sha256": "c1d26699bbe1a7d90d7b0427e70af1bee414dd72f113ef5c02cdd79246620c0f",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 394,
+        "eval_count": 24,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": false,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "delivery costs 7 tokens per order.",
+            "source": "delivery-old.md",
+            "answer_match": false,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": false,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"b3dea7dfbeff00fae161d18ef2e5bc0ef24746d5ec536560b2659cbd448bb7ec\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":24,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":394},\"response_sha256\":\"c1d26699bbe1a7d90d7b0427e70af1bee414dd72f113ef5c02cdd79246620c0f\"}",
+      "record_sha256": "90f9a75f024cbcafef8eff62cdd971f1b4c5b5cd3b5c746640d78c01061f0977"
+    },
+    {
+      "seconds": 0.235,
+      "id": "transfer-boundary",
+      "category": "boundary",
+      "question": "Does exactly 75 tokens qualify for free Pine delivery under the February notice?",
+      "reference_answer": "Yes, at least 75 qualifies.",
+      "unanswerable": false,
+      "case_sha256": "5eadd7b3587c271cf7f073e75f29397777c5dcdc58063c5e38f57962ba649674",
+      "response": {
+        "answer": "• Yes, exactly 75 tokens qualify for free Pine delivery under the February notice.",
+        "sources": [
+          "delivery-new.md",
+          "harbor.md",
+          "delivery-old.md",
+          "equipment.md",
+          "workshop.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"• Yes, exactly 75 tokens qualify for free Pine delivery under the February notice.\",\"chunks\":[{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"}],\"sources\":[\"delivery-new.md\",\"harbor.md\",\"delivery-old.md\",\"equipment.md\",\"workshop.md\"]}",
+      "response_sha256": "0f729bc86823b038ed87c00e0538b97448d7b460a4478fc70af09582d59b8b19",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 389,
+        "eval_count": 18,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "Orders totaling at least 75 tokens receive free delivery.",
+            "source": "delivery-new.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"5eadd7b3587c271cf7f073e75f29397777c5dcdc58063c5e38f57962ba649674\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":18,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":389},\"response_sha256\":\"0f729bc86823b038ed87c00e0538b97448d7b460a4478fc70af09582d59b8b19\"}",
+      "record_sha256": "c11cb4a820528d84536d33a244205f6e72a020b7433905aa432cab35f28b0720"
+    },
+    {
+      "seconds": 0.274,
+      "id": "transfer-code",
+      "category": "identifier",
+      "question": "What is the Beacon emergency release code?",
+      "reference_answer": "MAPLE-904.",
+      "unanswerable": false,
+      "case_sha256": "b52874c88b33515de0d3bd5dcd4aaf23b0c0bab2d79a0e35bdb687c139524a95",
+      "response": {
+        "answer": "• The QV-42 Fictional Beacon equipment's emergency release code is MAPLE-904.",
+        "sources": [
+          "equipment.md",
+          "workshop.md",
+          "delivery-old.md",
+          "harbor.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"• The QV-42 Fictional Beacon equipment's emergency release code is MAPLE-904.\",\"chunks\":[{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"equipment.md\",\"workshop.md\",\"delivery-old.md\",\"harbor.md\",\"delivery-new.md\"]}",
+      "response_sha256": "89be676cf61f5110ea0195881c862234503bd583f5f0ecae8dd53009369801cb",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 382,
+        "eval_count": 21,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "Emergency release code is MAPLE-904.",
+            "source": "equipment.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"b52874c88b33515de0d3bd5dcd4aaf23b0c0bab2d79a0e35bdb687c139524a95\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":21,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":382},\"response_sha256\":\"89be676cf61f5110ea0195881c862234503bd583f5f0ecae8dd53009369801cb\"}",
+      "record_sha256": "edfcd8c5d7252895b0a2a5a80e087b0ad5c064eab76a3143109db30090a480a0"
+    },
+    {
+      "seconds": 0.254,
+      "id": "transfer-closed",
+      "category": "negation",
+      "question": "Amber Harbor哪天闭馆？",
+      "reference_answer": "周三。",
+      "unanswerable": false,
+      "case_sha256": "de958dcb2ba3ada5c95b201bee574fbdc3d22102c8fffa9790e2ea75453ed3c8",
+      "response": {
+        "answer": "* 每周星期三（Wednesdays）是Amber Harbor的闭馆日。",
+        "sources": [
+          "workshop.md",
+          "harbor.md",
+          "equipment.md",
+          "delivery-old.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"* 每周星期三（Wednesdays）是Amber Harbor的闭馆日。\",\"chunks\":[{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"workshop.md\",\"harbor.md\",\"equipment.md\",\"delivery-old.md\",\"delivery-new.md\"]}",
+      "response_sha256": "b5773862366cfa5d91b3b5d625e54577b6624376640df47d2c07556d7180dcda",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 382,
+        "eval_count": 20,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": true,
+          "evidence_retrieval": true,
+          "source_coverage": true,
+          "refusal": null,
+          "no_forbidden_claim": true
+        },
+        "facts": [
+          {
+            "name": "Closed on Wednesdays.",
+            "source": "harbor.md",
+            "answer_match": true,
+            "evidence_retrieved": true,
+            "source_returned": true
+          }
+        ],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"de958dcb2ba3ada5c95b201bee574fbdc3d22102c8fffa9790e2ea75453ed3c8\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":20,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":382},\"response_sha256\":\"b5773862366cfa5d91b3b5d625e54577b6624376640df47d2c07556d7180dcda\"}",
+      "record_sha256": "e3e01c3dffa647f43d70e1a492894c814ebabd2c6b6c93022accce1e1126bec0"
+    },
+    {
+      "seconds": 0.162,
+      "id": "transfer-unknown-phone",
+      "category": "unanswerable",
+      "question": "青石工作坊客服电话是什么？",
+      "reference_answer": "资料未提供客服电话。",
+      "unanswerable": true,
+      "case_sha256": "4fcf2f6309fc90f9ad5667a7dc99189bb4956752f367057bd7945ded8cec165d",
+      "response": {
+        "answer": "提供的资料未提供此信息。",
+        "sources": [
+          "workshop.md",
+          "equipment.md",
+          "delivery-old.md",
+          "harbor.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"提供的资料未提供此信息。\",\"chunks\":[{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"workshop.md\",\"equipment.md\",\"delivery-old.md\",\"harbor.md\",\"delivery-new.md\"]}",
+      "response_sha256": "0ce46cc9638906f507186f833c17ccf0f2929cd78784747315da19e6b39ed241",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 383,
+        "eval_count": 9,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": null,
+          "evidence_retrieval": null,
+          "source_coverage": null,
+          "refusal": true,
+          "no_forbidden_claim": true
+        },
+        "facts": [],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"4fcf2f6309fc90f9ad5667a7dc99189bb4956752f367057bd7945ded8cec165d\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":9,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":383},\"response_sha256\":\"0ce46cc9638906f507186f833c17ccf0f2929cd78784747315da19e6b39ed241\"}",
+      "record_sha256": "ba2e2f14c965113b40b2f0c166b5dc1aed707337946ef755c436b4d62c03112e"
+    },
+    {
+      "seconds": 0.152,
+      "id": "transfer-unknown-director",
+      "category": "unanswerable",
+      "question": "Who is the director of Amber Harbor?",
+      "reference_answer": "The provided documents do not name the director.",
+      "unanswerable": true,
+      "case_sha256": "9aeecff614a61c4b0ee51dd6878323118fb7c472d5bedf617aa736249d19646a",
+      "response": {
+        "answer": "This information is not provided in the documents.",
+        "sources": [
+          "harbor.md",
+          "workshop.md",
+          "equipment.md",
+          "delivery-old.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"This information is not provided in the documents.\",\"chunks\":[{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"harbor.md\",\"workshop.md\",\"equipment.md\",\"delivery-old.md\",\"delivery-new.md\"]}",
+      "response_sha256": "f087cd49505bedd8c32b75d269a01f0a4884feb0b36088ebb52c380c38a1f725",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 382,
+        "eval_count": 10,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": null,
+          "evidence_retrieval": null,
+          "source_coverage": null,
+          "refusal": true,
+          "no_forbidden_claim": true
+        },
+        "facts": [],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"9aeecff614a61c4b0ee51dd6878323118fb7c472d5bedf617aa736249d19646a\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":10,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":382},\"response_sha256\":\"f087cd49505bedd8c32b75d269a01f0a4884feb0b36088ebb52c380c38a1f725\"}",
+      "record_sha256": "714117612110483922fac18080e4dd21648163864d660543a61c1e7a3e2f2a23"
+    },
+    {
+      "seconds": 0.163,
+      "id": "transfer-unknown-price",
+      "category": "unanswerable",
+      "question": "What is the purchase price of QV-42?",
+      "reference_answer": "The purchase price is not stated.",
+      "unanswerable": true,
+      "case_sha256": "f5c08155db2b90358e0df750b1519ad3f027e443f76015364fbd8a40893d2207",
+      "response": {
+        "answer": "This information is not provided in the documents.",
+        "sources": [
+          "equipment.md",
+          "workshop.md",
+          "harbor.md",
+          "delivery-old.md",
+          "delivery-new.md"
+        ],
+        "chunks": [
+          {
+            "text": "Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.",
+            "source": "equipment.md"
+          },
+          {
+            "text": "虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。",
+            "source": "workshop.md"
+          },
+          {
+            "text": "Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.",
+            "source": "harbor.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.",
+            "source": "delivery-old.md"
+          },
+          {
+            "text": "Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.",
+            "source": "delivery-new.md"
+          }
+        ]
+      },
+      "response_json": "{\"answer\":\"This information is not provided in the documents.\",\"chunks\":[{\"source\":\"equipment.md\",\"text\":\"Fictional Beacon equipment: QV-42 requires a 17 mm socket. Emergency release code is MAPLE-904. Purchase prices are not stated.\"},{\"source\":\"workshop.md\",\"text\":\"虚构青石工作坊：每周六14:20开放，预约提前5天，每场最多11人。退款至少提前36小时通知。年度会费32积分。未提供客服电话。\"},{\"source\":\"harbor.md\",\"text\":\"Fictional Amber Harbor center: Adult admission costs 18 tokens. Youth admission costs 6 tokens. Closed on Wednesdays. On open days, doors open at 10:15 and close at 18:40. Last entry is 18:05. Plain water is allowed; food is not. The director name is not provided.\"},{\"source\":\"delivery-old.md\",\"text\":\"Fictional Pine delivery notice effective January 2, 2026: delivery costs 7 tokens per order.\"},{\"source\":\"delivery-new.md\",\"text\":\"Fictional Pine delivery notice effective February 8, 2026: delivery costs 11 tokens per order, replacing the January fee. Orders totaling at least 75 tokens receive free delivery. Sunday delivery times are not provided.\"}],\"sources\":[\"equipment.md\",\"workshop.md\",\"harbor.md\",\"delivery-old.md\",\"delivery-new.md\"]}",
+      "response_sha256": "5cf9f5544ed9e5402b1afa2a47831750fe1df6def3a7152cf56c38efa1eebfb5",
+      "error": null,
+      "generation": {
+        "observed_calls": 1,
+        "model": "llama3.2",
+        "done_reason": "stop",
+        "prompt_eval_count": 385,
+        "eval_count": 10,
+        "done_reasons": [
+          "stop"
+        ]
+      },
+      "assessment": {
+        "checks": {
+          "execution": true,
+          "required_facts": null,
+          "evidence_retrieval": null,
+          "source_coverage": null,
+          "refusal": true,
+          "no_forbidden_claim": true
+        },
+        "facts": [],
+        "rule_pass": true,
+        "error": null
+      },
+      "record_json": "{\"case_sha256\":\"f5c08155db2b90358e0df750b1519ad3f027e443f76015364fbd8a40893d2207\",\"error\":null,\"generation\":{\"done_reason\":\"stop\",\"done_reasons\":[\"stop\"],\"eval_count\":10,\"model\":\"llama3.2\",\"observed_calls\":1,\"prompt_eval_count\":385},\"response_sha256\":\"5cf9f5544ed9e5402b1afa2a47831750fe1df6def3a7152cf56c38efa1eebfb5\"}",
+      "record_sha256": "a8881c8a928ab0db1e54c43717e816050cf54d4ae6b8259fc9f66b5ea015a5ac"
+    }
+  ],
+  "summary": {
+    "evaluated_cases": 12,
+    "suite_cases": 12,
+    "complete_suite": true,
+    "execution_errors": 0,
+    "rule_passed": 11,
+    "rule_pass_rate": 0.9166666666666666,
+    "fact_match_rate": 0.9090909090909091,
+    "retrieval_evidence_recall": 1.0,
+    "refusal_rule_pass_rate": 1.0,
+    "categories": {
+      "time": {
+        "total": 2,
+        "rule_passed": 2
+      },
+      "multi_document": {
+        "total": 1,
+        "rule_passed": 1
+      },
+      "multi_fact": {
+        "total": 1,
+        "rule_passed": 1
+      },
+      "version": {
+        "total": 2,
+        "rule_passed": 1
+      },
+      "boundary": {
+        "total": 1,
+        "rule_passed": 1
+      },
+      "identifier": {
+        "total": 1,
+        "rule_passed": 1
+      },
+      "negation": {
+        "total": 1,
+        "rule_passed": 1
+      },
+      "unanswerable": {
+        "total": 3,
+        "rule_passed": 3
+      }
+    },
+    "human_review": {
+      "reviewed": 0,
+      "coverage": 0.0,
+      "accuracy_on_decisive_reviews": null,
+      "confirmed_suite_accuracy": null,
+      "confirmed_suite_groundedness": null
+    },
+    "interpretation": "Rule matches and evidence recall are proxies, not whole-answer correctness or faithfulness. Synthetic development suite, not population accuracy."
+  }
+}
