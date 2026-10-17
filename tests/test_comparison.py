@@ -39,3 +39,14 @@ def test_saved_experiment_assessments_are_recomputed():
     root=ROOT/'evaluation/experiments/quality-v1'
     for name,dataset in [('transfer-before.json','transfer-v1.json'),('candidate-1-original.json','dataset.json'),('candidate-1-transfer.json','transfer-v1.json'),('candidate-2-original.json','dataset.json'),('candidate-2-transfer.json','transfer-v1.json')]:
         verify_report(load(root/name),Reference.load(ROOT/'evaluation'/dataset))
+
+
+def test_published_owner_result_manifest_and_comparison():
+    folder=ROOT/'evaluation/experiments/quality-v1';manifest=load(folder/'owner-manifest.json')
+    for name,digest in manifest['files_sha256'].items():assert hashlib.sha256((folder/name).read_bytes()).hexdigest()==digest,name
+    result=compare(Reference.load(BASE/'dataset.json'),load(BASE/'report.json'),load(folder/'candidate-2-original.json'),load(BASE/'review.json'),load(folder/'candidate-2-owner-review.json'))
+    assert result['before_human_accuracy']==28/34
+    assert result['after_human_accuracy']==32/34
+    assert result['human_accuracy_delta']==pytest.approx(4/34)
+    public=load(folder/'comparison-owner.json')
+    assert len(public['human_gains'])==5 and public['human_regressions']==['museum-refund']

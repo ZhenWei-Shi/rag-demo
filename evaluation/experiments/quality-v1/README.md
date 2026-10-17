@@ -1,5 +1,7 @@
 # Pre-registered answer-quality experiment
 
+Current owner-reviewed result: **28/34 -> 32/34 (+11.76 percentage points)** on this disclosed synthetic development set. See the owner-review section and comparison-owner.json for full gains, regression and limitations.
+
 The 34-case original baseline is frozen under tag `rag-baseline-2026-10-16-v3`.
 The 12 new synthetic transfer cases were committed/pushed in `dbcbff0` before any
 answer prompt changes, and their original outputs were captured from that clean
@@ -58,3 +60,37 @@ No upstream code copied and no new agent framework/model installed. The current
 failure is evidence use at generation, so a small shared prompt change is tested
 before adding retrieval or multi-call model complexity. These sources do not prove
 that the prompt is effective; the saved local runs are the evidence.
+
+
+## Owner review completed after export
+
+The owner exported response-bound judgments for candidate 2 and explicitly
+confirmed the one missing correctness label (unknown-ceo) in chat. The downloaded
+source file remains unchanged locally; its SHA-256 and that supplemental
+confirmation are recorded in the published review provenance. Public review files
+replace the reviewer's nickname with a role; judgments, comments and bindings
+remain intact.
+
+**Human correctness: baseline 28/34 (82.35%) -> candidate 2 32/34 (94.12%),
++4 correct answers / +11.76 percentage points.** Five gains: shipping-april,
+cross-booking, cross-fees, unknown-lab-year, tail-distractors. One regression:
+museum-refund. museum-opening remains wrong. Wording accuracy is included in the
+rubric. This supersedes the earlier pending-human-review status above, not the
+frozen raw answers or earlier experiment history.
+
+This is a same-owner, non-blinded review with before/after answers visible and a
+small disclosed development set. The stress case's retrieved context differs;
+33/34 other contexts match. Do not call the full delta a pure causal prompt effect,
+a blinded holdout gain, or production-wide accuracy. No repeat-run variance or
+statistical significance is established. The owner also supplied 33/34 passing
+groundedness labels, including groundedness-pass but correctness-fail on the
+weekday contradiction; preserve those labels and disclose that rubric distinction
+rather than presenting them as independent claim-level faithfulness verification.
+
+Public files: candidate-2-owner-review.json, candidate-2-owner-summary.json,
+comparison-owner.json, owner-manifest.json. The original 12-case transfer set
+still has no human labels. Existing defects and regressions are not hidden.
+A scoped resume wording is now supported: "On a disclosed 34-case bilingual
+synthetic development benchmark, increased owner-reviewed answer correctness from
+28/34 to 32/34; preserved immutable baselines and documented regressions."
+No PR merge or production deployment is implied.
