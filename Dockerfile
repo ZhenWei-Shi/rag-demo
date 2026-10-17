@@ -22,7 +22,9 @@ WORKDIR /app
 # ZH: 先复制依赖文件以利用 Docker 层缓存。
 #     只有 requirements.txt 变更时才会重新安装依赖。
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Use CPU wheels on this CPU-only demo, avoiding unused CUDA dependencies.
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r requirements.txt
 
 # EN: Pre-download the embedding model at build time so the container
 #     starts instantly without a cold-download delay.
@@ -31,7 +33,10 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 
 # EN: Copy application source code.
 # ZH: 复制应用源代码。
-COPY . .
+COPY app.py ./
+COPY api ./api
+COPY rag ./rag
+COPY static ./static
 
 # EN: ChromaDB stores its data here; mount a volume to persist it across restarts.
 # ZH: ChromaDB 数据目录，挂载 volume 以持久化索引数据。

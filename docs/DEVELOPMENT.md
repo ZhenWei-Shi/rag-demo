@@ -4,6 +4,79 @@ Updated 2026-10-16. This portfolio project is developed with AI assistance. The
 repository documents the implementation and checks rather than attributing all
 work to a single unaided developer.
 
+## Release and remaining checks (2026-10-17)
+
+The project owner requested review, merge and deployment of PR #6 and its parent
+chain. PRs #1–#6 were reviewed and merged sequentially, retargeting each dependent
+PR to `master`. Merged revision `38e6a64b4a6292e189f9f455973117d7a3ccf39f`
+has the same Git tree as the reviewed `6fea51a` head. Its [master CI run](https://github.com/ZhenWei-Shi/rag-demo/actions/runs/39003554935)
+passed 119 Python tests, 11 Node contracts and compile/syntax checks. The server's
+Python 3.10 environment separately passed all 119 tests in a temporary library.
+
+Only the runtime source whitelist was deployed, with a private code backup and
+file-hash deployment manifest. Existing credentials, public data isolation and
+private archives were preserved. The server's trusted HTTPS hostname returned
+200; real Q&A and SSE on the two public synthetic samples returned their expected
+facts and sources. Local Windows direct TLS requests timed out, so external
+connectivity stability is still a separate operational limitation.
+
+Accuracy is frozen at the accepted **32/34 owner-reviewed development cases**.
+The known opening-day and refund mistakes remain; no new accuracy claim is made.
+
+### Container verification workflow
+
+The new container workflow builds on a GitHub-hosted Ubuntu runner, installs
+CPU-only PyTorch, and starts a disposable container with **no network and no
+credentials**. The image copies only runtime source, not evaluation evidence,
+databases or private configuration. The smoke script verifies cached-model
+startup, English/Chinese Tesseract data, Poppler, a real image-only synthetic PDF
+through `/upload`, actual embeddings/retrieval, listing and deletion. It does not
+call any LLM, push a registry image or deploy to production. Runtime logs are
+available in Actions; container and anonymous volume are always removed.
+
+Reproduce on a machine with Docker:
+
+```bash
+docker build -t rag-demo:check .
+docker run -d --name rag-container --network none \
+  -e HF_HUB_OFFLINE=1 -e TRANSFORMERS_OFFLINE=1 \
+  -e OMP_NUM_THREADS=2 -e MKL_NUM_THREADS=2 -e OPENBLAS_NUM_THREADS=2 \
+  -e ANONYMIZED_TELEMETRY=False -e RAG_DATA_DIR=/tmp/rag-container-data rag-demo:check
+docker exec -i rag-container python - < tests/container_smoke.py
+docker rm -fv rag-container
+```
+
+This is an amd64 CPU validation; it does not certify ARM/GPU builds, Aliyun OCR
+or cloud generation. No Docker engine was installed on the small production host.
+The first build downloads public packages and the embedding model; only the
+running smoke container is network-isolated. Dependencies/base tags remain
+floating and this does not claim bit-reproducible or vulnerability-free images.
+
+Codex implemented and self-reviewed this follow-up on `codex/rag-container-checks`
+from the latest merged `master`; Claude/Gemini did not run a new review for it.
+It follows GitHub Flow as a separate PR. The existing accuracy evidence/tags are
+unchanged. No independent approval or CI success is claimed before it happens.
+The approach uses the official [Docker build/test workflow pattern](https://github.com/docker/build-push-action/blob/master/.github/workflows/test.yml)
+and [PyTorch CPU installation guidance](https://pytorch.org/get-started/locally/),
+checked 2026-10-17. Generic RAG frameworks found in GitHub search were unnecessary
+for verifying this repository's existing Dockerfile; no external project code was
+copied.
+
+### Development dependency follow-up
+
+The 2026-10-17 `npm audit` recheck still reports 10 high / 0 critical package
+entries stemming from three root advisories. [basic-ftp](https://github.com/advisories/GHSA-c475-qrg2-pj4r)
+has 6.2.1 patched, outside the current parent's 5.x range;
+[braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) and
+[node-forge](https://github.com/advisories/GHSA-86w9-cpqp-85rv) still list no patched
+version. The suggested `promptfoo@0.116.7` downgrade is not an independently
+verified remediation. No forced major override, downgrade or audit suppression
+was applied. These dependencies remain development-only and outside the runtime
+image/server; do not run untrusted provider/config files or expose report servers.
+The offline Python reviewer remains available. Upstream-compatible remediation
+remains open, as does activation/rotation of the inactive Aliyun OCR credential
+if cloud OCR is required; real local Tesseract fallback is already verified.
+
 ## Actual workflow for this update
 
 1. The project owner selected the lightweight approach, requested a comprehensive
@@ -231,3 +304,18 @@ PR #7 uses an explicit runtime whitelist and must also copy `api/` when combined
 with this cleanup, then repeat its real container smoke test. Do not infer that
 the old pre-cleanup green container check validates the combined tree. The cleanup
 does not claim a local Docker build or production deployment.
+
+
+## Container and cleanup integration (2026-10-17)
+
+PR #7 now incorporates the reviewed cleanup branch from PR #9 in its feature
+branch. The runtime image explicitly copies `api/`, and container workflow path
+filters include `api/**` so API-only edits trigger the build. The isolated smoke
+also fetches the real HTML, CSS and all browser modules, checks their bytes and
+JavaScript MIME types, then runs the existing real image-only PDF/OCR, embeddings,
+retrieval and CRUD checks. CI results for this combined head supersede the earlier
+pre-cleanup Docker result; no new accuracy claim or cloud LLM call is involved.
+Codex integrated and self-reviewed this follow-up; no new independent approval is
+claimed. Merge/deployment require explicit owner confirmation. A future source-only
+production release must include `api/**/*.py` as well as app/rag/static, with
+manifest verification, private backups and isolated server tests before restart.
