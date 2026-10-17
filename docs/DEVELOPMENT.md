@@ -141,3 +141,18 @@ implemented. All labels remain pending human review; model consultation is not
 human approval. The Node dev tree has 10 high audit entries (three underlying
 advisories), documented with scope and upstream limits in the evaluation README.
 No clean-audit, CI, merge or deployment result is claimed.
+
+## Answer-quality experiment and frozen evidence
+
+Before changing runtime code, published the original synthetic dataset, raw answers,
+owner's 28/34 human judgments, parameters and file digests. Windows Git newline
+normalization was detected by checking actual Git blobs, corrected with exact-byte
+attributes plus index refresh, and retained in the v1/v2/v3 tag audit trail. Use v3.
+New transfer questions and original outputs were committed before prompt changes.
+The original full suite remains disclosed development data; transfer checks became
+exploratory after the failed first candidate was observed. No post-output reference
+patterns were changed to increase scores. Full gains/regressions and comparability
+limits are in evaluation/experiments/quality-v1. No human improvement, CI success,
+merge or production deployment is claimed for these candidates. Claude CLI model
+reading identified issues but did not fill human labels; its missing-context theory
+for the refund error was rejected after checking the returned exact evidence.
