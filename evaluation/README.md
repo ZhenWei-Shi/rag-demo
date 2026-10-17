@@ -266,3 +266,38 @@ no disposable database behind. The final runner was also exercised on three
 real local questions; this smoke result is partial and cannot be a full-suite
 accuracy estimate. Starting the smoke initially found Ollama stopped; its existing
 local service was restarted, without pulling or changing the model.
+
+## Chinese offline human review
+
+Use the new card layout instead of searching through the wide Promptfoo table:
+
+```bash
+python -m evaluation.review_page --report evaluation/results/latest.json --review evaluation/results/latest.review.json --output evaluation/results/baseline-review.html
+python -m evaluation.review_page --report evaluation/experiments/quality-v1/candidate-2-original.json --baseline evaluation/baselines/2026-10-16-local-v1/report.json --baseline-review evaluation/baselines/2026-10-16-local-v1/review.json --output evaluation/results/comparison-review.html
+```
+
+Open the generated HTML locally. Each card clearly labels the question, original
+model answer, reference, expected evidence and actual retrieved/full documents.
+English questions have Chinese reading aids with the original question alongside.
+Comparisons show baseline human judgments beside the new, initially unreviewed
+answer. Correctness and evidence support are separate selectors. Browser storage
+is keyed to run/dataset/response/execution bindings; the old baseline's judgments
+are never copied to a new run. Input is rendered as text, not executable HTML.
+
+Selections/notes stay in this browser until you export the review JSON. Export
+requires a reviewer for completed labels. Give the exported file to the project
+maintainer and use the existing `score --review PATH` command to verify/aggregate;
+the page does not silently overwrite repository files. Regenerating a page reads
+the explicitly supplied review file. Avoid using shared browser profiles for
+private datasets; all shipped examples here are fictional/public.
+
+Validation: combined branch 117 Python tests and 11 Node tests passed locally.
+An isolated headless Edge profile exercised navigation, search/filter, empty
+results, immediate note persistence without blur, export bindings, failed-answer
+pass prohibition and reset on the next valid answer, and 390px/1200px layouts.
+QA labels were never written back to real human reviews. Gemini CLI review led
+to immediate note saving and avoiding reviewer reassignment on unchanged export.
+Its case-order, incoming-label-binding and permanently-disabled-option claims did
+not reproduce: Python enforces case order and response bindings, and JS resets
+the disabled flag per row. Claude's answer reading is model commentary, not a
+human label. No production deployment or merged PR is claimed.
