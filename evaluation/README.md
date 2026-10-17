@@ -301,3 +301,34 @@ Its case-order, incoming-label-binding and permanently-disabled-option claims di
 not reproduce: Python enforces case order and response bindings, and JS resets
 the disabled flag per row. Claude's answer reading is model commentary, not a
 human label. No production deployment or merged PR is claimed.
+
+### Lockfile cleanup recheck (2026-10-17)
+
+A closer inspection found 17 entries explicitly marked `extraneous: true` in the
+committed lockfile. In particular, an unused root chokidar 3 / braces tree caused
+three propagated audit entries and even two misleading entries under
+`npm audit --omit=dev`. Promptfoo actually uses nested chokidar 5; Nunjucks lists
+chokidar 3 as an optional peer, unused by this project's static report command.
+
+`npm prune --ignore-scripts --no-audit --no-fund` removed exactly those 17 entries.
+Every retained lock entry, version and integrity value is unchanged; no dependency
+was upgraded, downgraded or overridden. The optional watcher peer is not newly
+installed. The official [npm prune documentation](https://docs.npmjs.com/cli/v11/commands/npm-prune/)
+describes this as removal of extraneous packages.
+
+After cleanup, full audit reports **7 high / 0 critical**, with basic-ftp and
+node-forge as the remaining root advisories; production-only npm audit reports
+**0**. This narrows the earlier 10-high statement, without claiming that all
+vulnerabilities are fixed. Python runtime, Docker deployment, original evaluation
+answers and human scores are unchanged. All 11 Node contracts and the real
+34-case frozen Promptfoo report replay passed framework agreement (32 rule passes,
+2 known quality failures, 0 execution errors; expected exit 100). Replay only
+rendered existing answers into a separate ignored output directory and made no
+new LLM calls. The offline Python review page remains available.
+
+Codex performed this follow-up on a separate `codex/rag-lockfile-cleanup` branch
+from merged master; no new Claude/Gemini review was run. Validation does not cover
+Nunjucks file-watching functionality, which this project does not use. Existing
+upstream advisory links and usage restrictions above still apply to the remaining
+packages. CI results are provided with the cleanup PR; no merge or deployment is
+implied by local completion.
