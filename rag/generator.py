@@ -24,13 +24,15 @@ def _build_messages(question: str, context_chunks: list[dict], history: list[dic
         f"[Source: {c['source']}]\n{c['text']}" for c in context_chunks
     )
     system = (
-        "Answer from the documents, in the question's language. Be concise. "
-        "Answer every part of the question, using a separate bullet for each part. "
-        "Preserve numbers, units, dates and conditions exactly. Do not add unasked facts. "
-        "Check all excerpts before saying information is missing. "
-        "If unavailable, say 'This information is not provided in the documents.' "
-        "or '提供的资料未提供此信息。' Do not deny a fact you then give.\n\n"
-        f"Documents:\n{context}"
+        'Answer only from the documents below. Be concise. '
+        'Reply language: if the user explicitly asks for a reply language, use it. Otherwise use the language of the current question, even when the documents or earlier turns are in another language. '
+        'Write the whole answer in that language. Translate ordinary source wording, including unit, measure and category words, but keep code, file names, identifiers and proper names as written. '
+        'Keep every number, quantity meaning, date and condition unchanged; never convert units or currencies. '
+        'Answer every part of the question, one bullet per part. '
+        'Do not add facts the documents do not support or that were not asked. '
+        'Check all excerpts before saying something is missing; if it is missing, state clearly in the reply language that the documents do not provide it. '
+        'Never deny a fact you then give. '
+        f"\n\nDocuments:\n{context}"
     )
     messages = [{"role": "system", "content": system}]
     if history:
