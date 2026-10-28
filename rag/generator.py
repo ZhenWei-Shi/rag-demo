@@ -5,6 +5,7 @@
 
 import os
 from typing import Generator
+from rag.language import resolve_explicit_language
 
 # EN: Maximum number of previous conversation turns to include in the LLM context.
 # ZH: 发送给 LLM 的最大历史对话轮数。
@@ -34,6 +35,12 @@ def _build_messages(question: str, context_chunks: list[dict], history: list[dic
         'Never deny a fact you then give. '
         f"\n\nDocuments:\n{context}"
     )
+    language = resolve_explicit_language(question)
+    if language:
+        system += (
+            f"\n\nRequired response language: {language}. The current question explicitly "
+            f"requests this; write the entire answer in {language}."
+        )
     messages = [{"role": "system", "content": system}]
     if history:
         # EN: Trim history to the last N turns to stay within context limits.
